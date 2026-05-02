@@ -3,175 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anson Lo 歌曲決定器 - Versus</title>
+    <title>Anson Lo Music Versus - Top 5</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --primary-color: #f472b6; /* 採用經典粉色系 */
+            --primary-color: #f472b6;
             --primary-hover: #db2777;
             --bg-color: #fdf2f8;
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
-        .container { background: var(--card-bg); width: 100%; max-width: 600px; padding: 35px; border-radius: 24px; box-shadow: var(--shadow); }
+        .container { background: var(--card-bg); width: 100%; max-width: 500px; padding: 30px; border-radius: 24px; box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1); }
         
-        h1 { text-align: center; font-size: 2.2rem; color: var(--primary-color); margin-bottom: 8px; letter-spacing: 1px; }
-        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; }
-
-        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .category-btn { 
-            padding: 25px 15px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 16px; 
-            text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .category-btn:hover { border-color: var(--primary-color); background: #ffe4e6; transform: translateY(-5px); box-shadow: 0 4px 12px rgba(244, 114, 182, 0.2); }
-        .category-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
-        .category-name { font-weight: bold; font-size: 1.1rem; color: var(--text-main); }
-
-        .divider { text-align: center; margin: 25px 0; color: #cbd5e1; position: relative; font-size: 0.9rem; }
-        .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 35%; height: 1px; background: #e2e8f0; }
-        .divider::before { left: 0; } .divider::after { right: 0; }
-
+        h1 { text-align: center; font-size: 1.8rem; color: var(--primary-color); margin-bottom: 20px; }
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        textarea { width: 100%; height: 180px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; resize: none; margin-bottom: 20px; outline: none; font-size: 1rem; line-height: 1.5; }
-        .btn { width: 100%; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        .btn-outline { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); margin-top: 12px; }
+        /* 選單介面 */
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .category-btn { padding: 20px 10px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .category-btn:hover { border-color: var(--primary-color); transform: translateY(-3px); }
 
-        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
-        .choice-card { 
-            padding: 30px 15px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 18px; text-align: center; 
-            cursor: pointer; font-size: 1.2rem; font-weight: bold; min-height: 150px;
-            display: flex; align-items: center; justify-content: center; transition: 0.2s;
-        }
-        .choice-card:hover { border-color: var(--primary-color); background: #ffe4e6; transform: scale(1.03); }
+        /* 比較介面 */
+        .choice-card { padding: 30px 15px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 18px; text-align: center; cursor: pointer; font-size: 1.2rem; font-weight: bold; min-height: 140px; display: flex; align-items: center; justify-content: center; transition: 0.2s; margin-bottom: 15px; }
+        .choice-card:hover { border-color: var(--primary-color); background: #ffe4e6; }
         .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
         #progress-fill { width: 0%; height: 100%; background: var(--primary-color); transition: 0.4s; }
 
-        .result-container { max-height: 400px; overflow-y: auto; padding-right: 5px; }
-        .result-item { display: flex; align-items: center; padding: 15px; background: #fff1f2; margin-bottom: 10px; border-radius: 12px; border-left: 5px solid var(--primary-color); }
-        .rank { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); margin-right: 20px; min-width: 25px; }
+        /* 排行榜圖片設計 (這是要被截圖的區域) */
+        #capture-area {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fff1f2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #f472b6;
+            margin-bottom: 20px;
+        }
+        .share-header { color: #db2777; font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; border-bottom: 2px solid #f472b6; padding-bottom: 10px; }
+        .result-item { display: flex; align-items: center; padding: 12px; background: white; margin-bottom: 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .rank-num { font-size: 1.2rem; font-weight: 900; color: #f472b6; margin-right: 15px; width: 30px; }
+        .song-name { font-weight: bold; font-size: 1.1rem; color: #1e293b; text-align: left; flex: 1; }
+        .share-footer { margin-top: 15px; font-size: 0.8rem; color: #f472b6; opacity: 0.8; }
 
-        @media (max-width: 480px) { .compare-grid { grid-template-columns: 1fr; } .category-grid { grid-template-columns: 1fr; } }
+        /* 按鈕風格 */
+        .btn { width: 100%; padding: 14px; background: var(--primary-color); color: white; border: none; border-radius: 12px; font-size: 1rem; cursor: pointer; font-weight: bold; margin-bottom: 10px; transition: 0.2s; }
+        .btn:hover { background: var(--primary-hover); }
+        .btn-download { background: #10b981; } /* 綠色下載按鈕 */
+        .btn-download:hover { background: #059669; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Anson Lo Versus</h1>
-    <p class="subtitle">選出你最心儀的「本命」歌曲</p>
 
     <div id="menu-view" class="view active">
         <div class="category-grid">
-            <div class="category-btn" onclick="preset('fast')">
-                <span class="category-icon">⚡</span>
-                <span class="category-name">快歌</span>
-            </div>
-            <div class="category-btn" onclick="preset('slow')">
-                <span class="category-icon">🌙</span>
-                <span class="category-name">慢歌</span>
-            </div>
-            <div class="category-btn" onclick="preset('duet')">
-                <span class="category-icon">👥</span>
-                <span class="category-name">合唱歌</span>
-            </div>
-            <div class="category-btn" onclick="preset('album')">
-                <span class="category-icon">💿</span>
-                <span class="category-name">大碟歌</span>
-            </div>
+            <div class="category-btn" onclick="preset('fast')">⚡ 快歌</div>
+            <div class="category-btn" onclick="preset('slow')">🌙 慢歌</div>
         </div>
-        <div class="divider">或輸入其他歌單</div>
-        <button class="btn btn-outline" onclick="showView('input-view')">自定義歌曲比較</button>
-    </div>
-
-    <div id="input-view" class="view">
-        <textarea id="items-input" placeholder="請輸入歌名，每行一首..."></textarea>
-        <button class="btn" onclick="startComparison()">開始淘汰賽</button>
-        <button class="btn btn-outline" onclick="showView('menu-view')">返回選單</button>
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted);">選擇組別開始對決，選出你的 Top 5</p>
     </div>
 
     <div id="compare-view" class="view">
         <div class="progress-bar"><div id="progress-fill"></div></div>
-        <p id="round-info" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;"></p>
-        <div class="compare-grid">
-            <div id="option-a" class="choice-card" onclick="makeChoice(0)"></div>
-            <div id="option-b" class="choice-card" onclick="makeChoice(1)"></div>
-        </div>
-        <p style="text-align: center; font-weight: bold; color: #cbd5e1; font-style: italic;">VS</p>
+        <p id="round-info" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;"></p>
+        <div id="option-a" class="choice-card" onclick="makeChoice(0)"></div>
+        <div id="option-b" class="choice-card" onclick="makeChoice(1)"></div>
     </div>
 
     <div id="result-view" class="view">
-        <h2 style="text-align: center; margin-bottom: 20px;">🏆 我的金曲排行榜</h2>
-        <div id="result-list" class="result-container"></div>
-        <button class="btn" style="margin-top: 25px;" onclick="showView('menu-view')">重新比較</button>
+        <div id="capture-area">
+            <div class="share-header">My Top 5 AL Tracks</div>
+            <div id="top5-list"></div>
+            <div class="share-footer">Created by AL001 Versus</div>
+        </div>
+        
+        <button class="btn btn-download" onclick="downloadImage()">💾 下載結果圖片</button>
+        <button class="btn" onclick="location.reload()">重新開始</button>
     </div>
 </div>
 
 <script>
     const presets = {
         fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy"],
-        slow: ["Burn Out", "角落生物", "神隊友", "EGO", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶"],
-        duet: ["神隊友 (合唱版)", "及時行樂"],
-        album: ["教主專輯遺珠"]
+        slow: ["Burn Out", "角落生物", "神隊友", "EGO", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶"]
     };
 
-    let items = [], scores = {}, totalRounds = 0;
-    let leftIdx = 0, rightIdx = 1;
+    let items = [], scores = {}, leftIdx = 0, rightIdx = 1;
 
     function preset(type) {
-        document.getElementById('items-input').value = presets[type].join('\n');
-        startComparison();
-    }
-
-    function startComparison() {
-        const text = document.getElementById('items-input').value.trim();
-        items = text.split('\n').map(i => i.trim()).filter(i => i !== "");
-        if (items.length < 2) return alert("請至少選擇兩首歌！");
-        
-        // 洗牌初始順序
-        items.sort(() => Math.random() - 0.5);
-        
+        items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {}; 
         items.forEach(i => scores[i] = 0);
-        
-        totalRounds = 0;
-        leftIdx = 0;
-        rightIdx = 1;
-        
+        leftIdx = 0; rightIdx = 1;
         showView('compare-view');
         updateUI();
     }
 
     function makeChoice(idx) {
-        totalRounds++;
-        
-        // 獲勝者加分
-        const winnerIdx = idx === 0 ? leftIdx : rightIdx;
-        const loserIdx = idx === 0 ? rightIdx : leftIdx;
-        scores[items[winnerIdx]]++;
+        const winner = idx === 0 ? items[leftIdx] : items[rightIdx];
+        scores[winner]++;
 
-        // 核心優化：如果左邊贏了，我們繼續讓它跟下一個比；
-        // 如果右邊贏了，交換位置，讓贏家留在左邊繼續挑戰。
+        // 贏家留下來挑戰下一個 (快速淘汰制)
         if (idx === 1) {
-            // 交換位置，讓贏家留在左邊
             let temp = items[leftIdx];
             items[leftIdx] = items[rightIdx];
             items[rightIdx] = temp;
         }
 
         rightIdx++;
-
         if (rightIdx < items.length) {
             updateUI();
         } else {
-            // 已經比完一輪，第一名已經產生。
-            // 為了增加精準度，我們可以選擇結束，或重置右指針再跑一輪。
             showResults();
         }
     }
@@ -179,22 +128,22 @@
     function updateUI() {
         document.getElementById('option-a').textContent = items[leftIdx];
         document.getElementById('option-b').textContent = items[rightIdx];
-        
-        // 進度條改為顯示已進行的回合
         const progress = (rightIdx / items.length) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
-        document.getElementById('round-info').textContent = `對決進度：${rightIdx} / ${items.length}`;
+        document.getElementById('round-info').textContent = `進度：${rightIdx} / ${items.length}`;
     }
 
     function showResults() {
         showView('result-view');
-        // 根據得分排序，如果得分一樣，則保留原本對決勝出的順序
+        // 根據得分排序
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        const list = document.getElementById('result-list');
-        list.innerHTML = sorted.map((item, i) => `
+        const top5 = sorted.slice(0, 5); // 只取前五名
+        
+        const listEl = document.getElementById('top5-list');
+        listEl.innerHTML = top5.map((song, i) => `
             <div class="result-item">
-                <div class="rank">#${i + 1}</div>
-                <div class="song-name">${item} ${i===0?'🏆':''}</div>
+                <div class="rank-num">${i + 1}</div>
+                <div class="song-name">${song}</div>
             </div>
         `).join('');
     }
@@ -203,8 +152,35 @@
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
-</script>
 
+    // 核心功能：下載圖片
+    function downloadImage() {
+        const btn = document.querySelector('.btn-download');
+        btn.textContent = "正在生成圖片...";
+        btn.disabled = true;
+
+        const area = document.getElementById('capture-area');
+        
+        html2canvas(area, {
+            backgroundColor: null,
+            scale: 2, // 提高清晰度
+            logging: false,
+            useCORS: true
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `My-AL-Top5-${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            
+            btn.textContent = "💾 下載結果圖片";
+            btn.disabled = false;
+        }).catch(err => {
+            alert("圖片生成失敗，請嘗試手動截圖");
+            btn.textContent = "💾 下載結果圖片";
+            btn.disabled = false;
+        });
+    }
+</script>
 
 </body>
 </html>
