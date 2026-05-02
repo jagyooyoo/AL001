@@ -1,3 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anson Lo 歌曲決定器 - Versus</title>
+    <style>
+        :root {
+            --primary-color: #f472b6; /* 採用經典粉色系 */
+            --primary-hover: #db2777;
+            --bg-color: #fdf2f8;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
+        .container { background: var(--card-bg); width: 100%; max-width: 600px; padding: 35px; border-radius: 24px; box-shadow: var(--shadow); }
+        
+        h1 { text-align: center; font-size: 2.2rem; color: var(--primary-color); margin-bottom: 8px; letter-spacing: 1px; }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; }
+
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .category-btn { 
+            padding: 25px 15px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 16px; 
+            text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .category-btn:hover { border-color: var(--primary-color); background: #ffe4e6; transform: translateY(-5px); box-shadow: 0 4px 12px rgba(244, 114, 182, 0.2); }
+        .category-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .category-name { font-weight: bold; font-size: 1.1rem; color: var(--text-main); }
+
+        .divider { text-align: center; margin: 25px 0; color: #cbd5e1; position: relative; font-size: 0.9rem; }
+        .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 35%; height: 1px; background: #e2e8f0; }
+        .divider::before { left: 0; } .divider::after { right: 0; }
+
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        textarea { width: 100%; height: 180px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; resize: none; margin-bottom: 20px; outline: none; font-size: 1rem; line-height: 1.5; }
+        .btn { width: 100%; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); margin-top: 12px; }
+
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
+        .choice-card { 
+            padding: 30px 15px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 18px; text-align: center; 
+            cursor: pointer; font-size: 1.2rem; font-weight: bold; min-height: 150px;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .choice-card:hover { border-color: var(--primary-color); background: #ffe4e6; transform: scale(1.03); }
+        .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
+        #progress-fill { width: 0%; height: 100%; background: var(--primary-color); transition: 0.4s; }
+
+        .result-container { max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .result-item { display: flex; align-items: center; padding: 15px; background: #fff1f2; margin-bottom: 10px; border-radius: 12px; border-left: 5px solid var(--primary-color); }
+        .rank { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); margin-right: 20px; min-width: 25px; }
+
+        @media (max-width: 480px) { .compare-grid { grid-template-columns: 1fr; } .category-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Anson Lo Versus</h1>
+    <p class="subtitle">選出你最心儀的「本命」歌曲</p>
+
+    <div id="menu-view" class="view active">
+        <div class="category-grid">
+            <div class="category-btn" onclick="preset('fast')">
+                <span class="category-icon">⚡</span>
+                <span class="category-name">快歌</span>
+            </div>
+            <div class="category-btn" onclick="preset('slow')">
+                <span class="category-icon">🌙</span>
+                <span class="category-name">慢歌</span>
+            </div>
+            <div class="category-btn" onclick="preset('duet')">
+                <span class="category-icon">👥</span>
+                <span class="category-name">合唱歌</span>
+            </div>
+            <div class="category-btn" onclick="preset('album')">
+                <span class="category-icon">💿</span>
+                <span class="category-name">大碟歌</span>
+            </div>
+        </div>
+        <div class="divider">或輸入其他歌單</div>
+        <button class="btn btn-outline" onclick="showView('input-view')">自定義歌曲比較</button>
+    </div>
+
+    <div id="input-view" class="view">
+        <textarea id="items-input" placeholder="請輸入歌名，每行一首..."></textarea>
+        <button class="btn" onclick="startComparison()">開始淘汰賽</button>
+        <button class="btn btn-outline" onclick="showView('menu-view')">返回選單</button>
+    </div>
+
+    <div id="compare-view" class="view">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <p id="round-info" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;"></p>
+        <div class="compare-grid">
+            <div id="option-a" class="choice-card" onclick="makeChoice(0)"></div>
+            <div id="option-b" class="choice-card" onclick="makeChoice(1)"></div>
+        </div>
+        <p style="text-align: center; font-weight: bold; color: #cbd5e1; font-style: italic;">VS</p>
+    </div>
+
+    <div id="result-view" class="view">
+        <h2 style="text-align: center; margin-bottom: 20px;">🏆 我的金曲排行榜</h2>
+        <div id="result-list" class="result-container"></div>
+        <button class="btn" style="margin-top: 25px;" onclick="showView('menu-view')">重新比較</button>
+    </div>
+</div>
+
 <script>
     const presets = {
         fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy"],
@@ -89,3 +204,7 @@
         document.getElementById(id).classList.add('active');
     }
 </script>
+
+
+</body>
+</html>
