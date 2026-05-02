@@ -3,6 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Versus - 萬事決定器</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
+        .container { background: var(--card-bg); width: 100%; max-width: 700px; padding: 30px; border-radius: 20px; box-shadow: var(--shadow); }
+        
+        h1 { text-align: center; font-size: 2rem; color: var(--primary-color); margin-bottom: 8px; }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; }
+
+        /* 類別選擇選單 */
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .category-btn { 
+            padding: 20px; background: #f1f5f9; border: 2px solid transparent; border-radius: 12px; 
+            text-align: center; cursor: pointer; transition: all 0.2s; font-weight: bold;
+        }
+        .category-btn:hover { border-color: var(--primary-color); background: #eef2ff; transform: translateY(-3px); }
+        .category-icon { font-size: 1.5rem; display: block; margin-bottom: 5px; }
+
+        .divider { text-align: center; margin: 20px 0; color: #cbd5e1; position: relative; }
+        .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: #cbd5e1; }
+        .divider::before { left: 0; } .divider::after { right: 0; }
+
+        /* 各階段視圖 */
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        textarea { width: 100%; height: 150px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; resize: none; margin-bottom: 20px; outline: none; }
+        .btn { width: 100%; padding: 15px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-size: 1.1rem; cursor: pointer; font-weight: bold; }
+        .btn-outline { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); margin-top: 10px; }
+
+        /* 比較畫面 */
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .choice-card { 
+            padding: 40px 10px; background: #f1f5f9; border-radius: 15px; text-align: center; 
+            cursor: pointer; font-size: 1.3rem; font-weight: bold; min-height: 160px;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .choice-card:hover { background: var(--primary-color); color: white; }
+        .progress-bar { width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; margin-bottom: 20px; }
+        #progress-fill { width: 0%; height: 100%; background: var(--primary-color); transition: 0.3s; }
+
+        /* 結果排名 */
+        .result-item { display: flex; align-items: center; padding: 12px; background: #f8fafc; margin-bottom: 8px; border-radius: 8px; }
+        .rank { background: var(--primary-color); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; font-weight: bold; }
+
+        @media (max-width: 480px) { .compare-grid { grid-template-columns: 1fr; } .category-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Versus</h1>
+    <p class="subtitle">解決你的選擇困難症</p>
+
+    <div id="menu-view" class="view active">
+        <div class="category-grid">
+            <div class="category-btn" onclick="preset('food')"><span class="category-icon">🍱</span>午餐吃什麼</div>
+            <div class="category-btn" onclick="preset('travel')"><span class="category-icon">✈️</span>旅遊目的地</div>
+            <div class="category-btn" onclick="preset('movie')"><span class="category-icon">🎬</span>電影類型</div>
+            <div class="category-btn" onclick="preset('sport')"><span class="category-icon">🏀</span>假日運動</div>
+        </div>
+        <div class="divider">或自定義</div>
+        <button class="btn btn-outline" onclick="showView('input-view')">手動輸入項目</button>
+    </div>
+
+    <div id="input-view" class="view">
+        <textarea id="items-input" placeholder="每行輸入一個項目..."></textarea>
+        <button class="btn" onclick="startComparison()">開始比較</button>
+        <button class="btn btn-outline" onclick="showView('menu-view')">返回選單</button>
+    </div>
+
+    <div id="compare-view" class="view">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <p id="round-info" style="text-align: center; color: var(--text-muted); margin-bottom: 15px;"></p>
+        <div class="compare-grid">
+            <div id="option-a" class="choice-card" onclick="makeChoice(0)"></div>
+            <div id="option-b" class="choice-card" onclick="makeChoice(1)"></div>
+        </div>
+    </div>
+
+    <div id="result-view" class="view">
+        <h2 style="text-align: center; margin-bottom: 20px;">🏆 最終排名</h2>
+        <div id="result-list"></div>
+        <button class="btn" style="margin-top: 20px;" onclick="showView('menu-view')">再次挑戰</button>
+    </div>
+</div>
+
+<script>
+    const presets = {
+        food: ["拉麵", "火鍋", "壽司", "漢堡", "義大利麵", "滷肉飯", "便當"],
+        travel: ["日本", "韓國", "泰國", "歐洲", "美國", "冰島", "澳洲"],
+        movie: ["動作片", "恐怖片", "浪漫喜劇", "科幻片", "紀錄片", "動畫片"],
+        sport: ["慢跑", "游泳", "羽毛球", "籃球", "健身房", "瑜珈"]
+    };
+
+    let items = [], comparisons = [], currentIndex = 0, scores = {};
+
+    function preset(type) {
+        document.getElementById('items-input').value = presets[type].join('\n');
+        startComparison();
+    }
+
+    function startComparison() {
+        const text = document.getElementById('items-input').value.trim();
+        items = text.split('\n').map(i => i.trim()).filter(i => i !== "");
+        if (items.length < 2) return alert("請至少輸入兩個項目！");
+
+        scores = {}; items.forEach(i => scores[i] = 0);
+        comparisons = [];
+        for (let i = 0; i < items.length; i++) {
+            for (let j = i + 1; j < items.length; j++) comparisons.push([items[i], items[j]]);
+        }
+        comparisons.sort(() => Math.random() - 0.5);
+        currentIndex = 0;
+        showView('compare-view');
+        updateUI();
+    }
+
+    function makeChoice(idx) {
+        scores[comparisons[currentIndex][idx]]++;
+        currentIndex++;
+        if (currentIndex < comparisons.length) {
+            updateUI();
+        } else {
+            showResults();
+        }
+    }
+
+    function updateUI() {
+        const pair = comparisons[currentIndex];
+        document.getElementById('option-a').textContent = pair[0];
+        document.getElementById('option-b').textContent = pair[1];
+        const progress = (currentIndex / comparisons.length) * 100;
+        document.getElementById('progress-fill').style.width = progress + '%';
+        document.getElementById('round-info').textContent = `回合 ${currentIndex + 1} / ${comparisons.length}`;
+    }
+
+    function showResults() {
+        showView('result-view');
+        const sorted = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
+        const list = document.getElementById('result-list');
+        list.innerHTML = sorted.map((item, i) => `
+            <div class="result-item">
+                <div class="rank">${i + 1}</div>
+                <div>${item}</div>
+            </div>
+        `).join('');
+    }
+
+    function showView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Versus - The Ultimate Decider</title>
     <style>
         :root {
