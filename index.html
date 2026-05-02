@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Anson Lo Versus - 神徒專屬版</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -18,56 +18,79 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-main); }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
+        
+        /* 防止捲動 */
+        html, body { 
+            height: 100%; 
+            overflow: hidden; 
+            background-color: var(--bg-color); 
+        }
+
+        body { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 10px;
+        }
         
         .container { 
             background: var(--card-bg); 
             width: 100%; 
-            max-width: 480px; 
-            padding: 30px 20px; 
-            border-radius: 40px; 
-            box-shadow: 0 15px 40px rgba(255, 192, 203, 0.4); 
+            max-width: 420px; 
+            max-height: 95vh; /* 限制容器高度 */
+            padding: 20px 15px; 
+            border-radius: 30px; 
+            box-shadow: 0 10px 30px rgba(255, 192, 203, 0.3); 
             text-align: center;
+            display: flex;
+            flex-direction: column;
         }
         
-        h1 { font-size: 2.2rem; color: var(--accent-color); margin-bottom: 20px; font-family: var(--font-round); text-shadow: 2px 2px 0px #fff; }
+        h1 { font-size: 1.8rem; color: var(--accent-color); margin-bottom: 10px; font-family: var(--font-round); }
 
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .view { display: none; flex: 1; }
+        .view.active { display: flex; flex-direction: column; justify-content: center; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        /* 選單介面優化 */
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .category-btn { 
-            padding: 25px 10px; background: #fff9fa; border: 2px solid var(--primary-color); 
-            border-radius: 25px; cursor: pointer; transition: 0.3s; 
-            color: var(--accent-color); font-weight: bold; font-size: 1.2rem; font-family: var(--font-round);
+            padding: 20px 5px; background: #fff9fa; border: 2px solid var(--primary-color); 
+            border-radius: 20px; cursor: pointer; color: var(--accent-color); 
+            font-weight: bold; font-size: 1.1rem; font-family: var(--font-round);
         }
-        .category-btn:hover { background: var(--primary-color); color: white; transform: translateY(-3px); }
 
+        /* 抉擇卡片優化 - 縮小尺寸以符合一頁顯示 */
         .choice-card { 
-            background: #fff; border: 4px solid #fff1f3; border-radius: 35px; 
-            cursor: pointer; transition: 0.3s; margin-bottom: 18px; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            background: #fff; border: 3px solid #fff1f3; border-radius: 25px; 
+            cursor: pointer; transition: 0.2s; margin-bottom: 10px; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            flex: 1; max-height: 200px; /* 限制單個卡片高度 */
         }
-        .choice-card:hover { border-color: var(--primary-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255, 192, 203, 0.3); }
+        .choice-card:hover { border-color: var(--primary-color); transform: scale(1.02); }
         
-        .song-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: #fdf2f4; }
-        .song-label { font-size: 1.3rem; font-weight: 700; padding: 20px 15px; color: var(--text-main); font-family: var(--font-main); }
+        .song-img { 
+            width: 100%; 
+            height: 130px; /* 固定圖片顯示高度 */
+            object-fit: cover; 
+            background: #fdf2f4; 
+        }
+        .song-label { font-size: 1.1rem; font-weight: 700; padding: 10px 5px; color: var(--text-main); }
 
-        .progress-bar { width: 100%; height: 12px; background: #fff1f3; border-radius: 20px; margin-bottom: 20px; }
-        #progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); border-radius: 20px; transition: 0.4s; }
+        .progress-bar { width: 100%; height: 8px; background: #fff1f3; border-radius: 10px; margin-bottom: 10px; }
+        #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; }
 
-        #capture-area { background: #fff; padding: 35px 20px; border-radius: 35px; text-align: center; border: 4px solid var(--primary-color); }
-        .share-header { color: var(--accent-color); font-size: 1.8rem; font-weight: bold; margin-bottom: 25px; font-family: var(--font-round); }
-        
-        .result-item { display: flex; align-items: center; padding: 12px; background: #fff9fa; margin-bottom: 12px; border-radius: 20px; border: 1px solid #fff1f3; }
-        .rank-img { width: 65px; height: 65px; border-radius: 15px; object-fit: cover; margin-right: 15px; border: 2px solid var(--primary-color); }
-        .rank-num { font-size: 1.6rem; font-weight: 900; color: var(--accent-color); margin-right: 15px; font-family: var(--font-round); width: 25px; }
+        #round-info { font-size: 0.9rem; margin-bottom: 8px; color: var(--accent-color); font-family: var(--font-round); }
 
-        .btn { width: 100%; padding: 18px; background: var(--accent-color); color: white; border: none; border-radius: 25px; font-size: 1.15rem; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; box-shadow: 0 8px 20px rgba(255, 153, 172, 0.4); }
-        .btn:hover { background: #ff7a94; transform: scale(1.02); }
-        .btn-download { background: #6EE7B7; box-shadow: 0 8px 20px rgba(110, 231, 183, 0.4); }
-        .btn-download:hover { background: #34D399; }
+        /* 結果清單優化 */
+        #capture-area { padding: 15px 10px; border-radius: 20px; border: 3px solid var(--primary-color); margin-bottom: 10px; }
+        .share-header { color: var(--accent-color); font-size: 1.4rem; margin-bottom: 15px; font-family: var(--font-round); }
+        .result-item { display: flex; align-items: center; padding: 6px 10px; background: #fff9fa; margin-bottom: 6px; border-radius: 12px; }
+        .rank-img { width: 40px; height: 40px; border-radius: 8px; margin-right: 10px; }
+        .rank-num { font-size: 1.2rem; font-weight: 900; color: var(--accent-color); width: 20px; font-family: var(--font-round); }
+
+        .btn { width: 100%; padding: 12px; background: var(--accent-color); color: white; border: none; border-radius: 20px; font-size: 1rem; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        .btn-download { background: #6EE7B7; }
     </style>
 </head>
 <body>
@@ -80,27 +103,26 @@
             <div class="category-btn" onclick="preset('fast')">⚡ 快歌</div>
             <div class="category-btn" onclick="preset('slow')">🌙 慢歌</div>
         </div>
-        <p style="color: var(--accent-color); font-weight: bold; font-family: var(--font-round);">各位神徒，準備好選出心水了嗎？</p>
+        <p style="color: var(--accent-color); font-size: 0.9rem; font-family: var(--font-round);">神徒專屬抉擇</p>
     </div>
 
     <div id="compare-view" class="view">
         <div class="progress-bar"><div id="progress-fill"></div></div>
-        <p id="round-info" style="color: var(--accent-color); font-weight: bold; margin-bottom: 15px; font-family: var(--font-round);"></p>
+        <p id="round-info"></p>
         <div class="choice-card" onclick="makeChoice(0)">
-            <img id="img-a" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Anson+Lo'">
+            <img id="img-a" class="song-img" src="">
             <div id="option-a" class="song-label"></div>
         </div>
         <div class="choice-card" onclick="makeChoice(1)">
-            <img id="img-b" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Anson+Lo'">
+            <img id="img-b" class="song-img" src="">
             <div id="option-b" class="song-label"></div>
         </div>
     </div>
 
-    <div id="result-view" class="view">
+    <div id="result-view" class="view" style="overflow-y: auto;">
         <div id="capture-area">
             <div class="share-header">神徒之選 Top 5</div>
             <div id="top5-list"></div>
-            <p style="margin-top:15px; color: var(--primary-color); font-family: var(--font-round); font-size: 0.9rem;">ansonlohonting-intlfanclub.com</p>
         </div>
         <button class="btn btn-download" onclick="downloadImage()">📸 儲存結果分享</button>
         <button class="btn" onclick="location.reload()">再玩一次</button>
@@ -109,7 +131,6 @@
 
 <script>
     const songImages = {
-        // --- 2026/05/03 最新更新部分 ---
         "Hey Hey OK!": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/HeyHeyOK_5b657f7c-2ff3-4376-80ed-452ad2803d75.jpg?v=1721128550",
         "Heartbreaker": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/gempages_477370228297172218-0414c180-4fbb-4212-9807-45d6710807eb.png?v=1741015997",
         "致我": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/al_tome.jpg?v=1729668242",
@@ -119,8 +140,6 @@
         "Nah": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A15_1.jpg?v=1695548268",
         "浪漫殺死巨蟹座": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/cover_3000x3000-scaled_4b1a205b-4080-4aed-b631-3a05f2970d94.jpg?v=1694526945",
         "Lemonade": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/gempages_477370228297172218-74a952b7-5bd2-4609-9c56-079afa1cca63.png?v=1754586438",
-        
-        // --- 其他已確認連結 ---
         "本命": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/19e978e22b24a827cda3e1554222064e.jpg?v=1774409729",
         "我的支持型伴侶": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
         "Rude Boy": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
@@ -185,7 +204,7 @@
             <div class="result-item">
                 <div class="rank-num">${i + 1}</div>
                 <img class="rank-img" src="${songImages[song]}" alt="${song}">
-                <div style="font-weight:700; flex:1; text-align:left; color:#555;">${song}</div>
+                <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.9rem;">${song}</div>
             </div>
         `).join('');
     }
