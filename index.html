@@ -87,11 +87,11 @@
         <div class="progress-bar"><div id="progress-fill"></div></div>
         <p id="round-info" style="color: var(--accent-color); font-weight: bold; margin-bottom: 15px; font-family: var(--font-round);"></p>
         <div class="choice-card" onclick="makeChoice(0)">
-            <img id="img-a" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Loading...'">
+            <img id="img-a" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Anson+Lo'">
             <div id="option-a" class="song-label"></div>
         </div>
         <div class="choice-card" onclick="makeChoice(1)">
-            <img id="img-b" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Loading...'">
+            <img id="img-b" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Anson+Lo'">
             <div id="option-b" class="song-label"></div>
         </div>
     </div>
@@ -109,39 +109,39 @@
 
 <script>
     const songImages = {
-        // 更新過的特定歌曲連結
+        // --- 2026/05/03 最新更新部分 ---
+        "Hey Hey OK!": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/HeyHeyOK_5b657f7c-2ff3-4376-80ed-452ad2803d75.jpg?v=1721128550",
+        "Heartbreaker": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/gempages_477370228297172218-0414c180-4fbb-4212-9807-45d6710807eb.png?v=1741015997",
+        "致我": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/al_tome.jpg?v=1729668242",
+        "King Kong": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A11_King-Kong-2_1.jpg?v=1695550208",
+        "永順街39號": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A12__39_1.jpg?v=1695549683",
+        "MONEY": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A15_MONEY_1.jpg?v=1695548475",
+        "Nah": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A15_1.jpg?v=1695548268",
+        "浪漫殺死巨蟹座": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/cover_3000x3000-scaled_4b1a205b-4080-4aed-b631-3a05f2970d94.jpg?v=1694526945",
+        "Lemonade": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/gempages_477370228297172218-74a952b7-5bd2-4609-9c56-079afa1cca63.png?v=1754586438",
+        
+        // --- 其他已確認連結 ---
         "本命": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/19e978e22b24a827cda3e1554222064e.jpg?v=1774409729",
         "我的支持型伴侶": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
         "Rude Boy": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
         "Take That": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
         "Trippin' Up": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
-        "Lemonade": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
         "你都有今日": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/The_time_is_always_now_cover_pic.png?v=1748233393",
-
-        // 其他單曲連結
         "一所懸命": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Burn_Out_626b96e4-4d1c-4394-b153-60580798e29a.jpg",
         "Megahit": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Megahit.jpg",
         "Megahit Megamix": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Megahit_Megamix.jpg",
         "Mr. Stranger": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Mr_Stranger.jpg",
-        "King Kong": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/King_Kong.jpg",
-        "MONEY": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/MONEY.jpg",
-        "Nah": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Nah.jpg",
-        "ON": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/ON.jpg",
-        "Hey Hey OK!": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Hey_Hey_OK.jpg",
-        "Heartbreaker": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Heartbreaker.jpg",
         "Gimme Gimme": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Gimme_Gimme.jpg",
         "Charisma": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Charisma.jpg?v=1774409406",
+        "ON": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/ON.jpg",
         "Burn Out": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Burn_Out.jpg",
         "角落生物": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Corner_Creature.jpg",
         "神隊友": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Teammate.jpg",
         "EGO": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/EGO.jpg",
         "不可愛教主": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Unlovable_Leader.jpg",
-        "永順街39號": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/39_Wing_Shun_Street.jpg",
         "同居陌生人": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Stranger_Under_The_Same_Roof.jpg",
         "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Secret_Affair.jpg",
-        "浪漫殺死巨蟹座": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Romance_Kills_Cancer.jpg",
-        "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Special_Dating_Ritual.jpg",
-        "致我": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/To_Me.jpg"
+        "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Special_Dating_Ritual.jpg"
     };
 
     const presets = {
