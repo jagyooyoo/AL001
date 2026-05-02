@@ -29,13 +29,13 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            padding: 10px;
+            padding: 5px;
         }
         
         .container { 
             background: var(--card-bg); 
-            width: 100%; 
-            max-width: 400px; 
+            width: 95%; 
+            max-width: 420px; 
             max-height: 98vh; 
             padding: 15px; 
             border-radius: 30px; 
@@ -45,45 +45,50 @@
             flex-direction: column;
         }
         
-        h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 8px; font-family: var(--font-round); }
+        h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 5px; font-family: var(--font-round); }
 
-        .view { display: none; flex: 1; min-height: 0; } /* min-height 確保 flex 容器不會溢出 */
+        .view { display: none; flex: 1; min-height: 0; } /* min-height: 0 是 flex 縮放關鍵 */
         .view.active { display: flex; flex-direction: column; justify-content: center; animation: fadeIn 0.3s ease-out; }
 
-        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
         .category-btn { 
             padding: 15px 5px; background: #fff9fa; border: 2px solid var(--primary-color); 
             border-radius: 20px; cursor: pointer; color: var(--accent-color); 
             font-weight: bold; font-size: 1.1rem; font-family: var(--font-round);
         }
 
-        /* 抉擇卡片優化：採用正方形比例顯示完整封面 */
+        /* 修正選擇卡片：使用 flex 分配空間 */
         .choice-card { 
             background: #fff; border: 3px solid #fff1f3; border-radius: 20px; 
             cursor: pointer; transition: 0.2s; margin-bottom: 8px; overflow: hidden;
             display: flex; flex-direction: column; 
-            flex: 1; /* 平分空間 */
-            min-height: 0; /* 關鍵：允許內容縮小 */
+            flex: 1; /* 讓兩個卡片平分剩餘空間 */
+            min-height: 0;
         }
         .choice-card:hover { border-color: var(--primary-color); transform: scale(1.01); }
         
         .song-img { 
             width: 100%; 
-            flex: 1; /* 圖片佔據剩餘所有空間 */
-            object-fit: cover; /* 填滿正方形，若想看完整不裁切可改 contain */
+            flex: 1; /* 圖片佔據卡片主要空間 */
+            object-fit: cover; /* 如果想要完整看見圖，可改為 contain，但 cover 在對齊上較美觀 */
             background: #fdf2f4; 
+            min-height: 0;
         }
-        .song-label { font-size: 1rem; font-weight: 700; padding: 8px 5px; color: var(--text-main); }
+        
+        .song-label { 
+            font-size: 1rem; font-weight: 700; padding: 8px 5px; 
+            color: var(--text-main); background: #fff;
+        }
 
         .progress-bar { width: 100%; height: 6px; background: #fff1f3; border-radius: 10px; margin-bottom: 5px; }
         #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; }
 
         #round-info { font-size: 0.85rem; margin-bottom: 5px; color: var(--accent-color); font-family: var(--font-round); }
 
-        /* 結果顯示優化 */
+        /* 結果清單優化 */
         #capture-area { padding: 10px; border-radius: 20px; border: 3px solid var(--primary-color); margin-bottom: 8px; }
         .share-header { color: var(--accent-color); font-size: 1.3rem; margin-bottom: 10px; font-family: var(--font-round); }
-        .result-item { display: flex; align-items: center; padding: 5px 10px; background: #fff9fa; margin-bottom: 5px; border-radius: 10px; }
+        .result-item { display: flex; align-items: center; padding: 5px 10px; background: #fff9fa; margin-bottom: 4px; border-radius: 12px; }
         .rank-img { width: 35px; height: 35px; border-radius: 6px; margin-right: 10px; }
         .rank-num { font-size: 1.1rem; font-weight: 900; color: var(--accent-color); width: 18px; font-family: var(--font-round); }
 
@@ -117,18 +122,18 @@
         </div>
     </div>
 
-    <div id="result-view" class="view">
+    <div id="result-view" class="view" style="overflow-y: auto;">
         <div id="capture-area">
             <div class="share-header">神徒之選 Top 5</div>
             <div id="top5-list"></div>
         </div>
-        <button class="btn btn-download" onclick="downloadImage()">📸 儲存結果</button>
+        <button class="btn btn-download" onclick="downloadImage()">📸 儲存結果分享</button>
         <button class="btn" onclick="location.reload()">再玩一次</button>
     </div>
 </div>
 
 <script>
-    /* 這裡保留您之前的 songImages 和 presets 數據，為了簡潔我省略了重複的清單 */
+    // [圖片連結物件維持不變，此處略過以節省篇幅，請使用上一版的 songImages 資料]
     const songImages = {
         "Hey Hey OK!": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/HeyHeyOK_5b657f7c-2ff3-4376-80ed-452ad2803d75.jpg?v=1721128550",
         "Heartbreaker": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/gempages_477370228297172218-0414c180-4fbb-4212-9807-45d6710807eb.png?v=1741015997",
@@ -225,7 +230,7 @@
             link.download = `AnsonLo_Top5_神徒.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
-            btn.textContent = "📸 儲存結果";
+            btn.textContent = "📸 儲存結果分享";
         });
     }
 </script>
