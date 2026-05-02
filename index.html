@@ -3,54 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anson Lo Music Versus - Sweet Pink Edition</title>
+    <title>Anson Lo Versus - Official Pink</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --primary-color: #ffb7c5; 
-            --primary-hover: #ff99ac;
-            --bg-color: #fff5f7;
+            /* 盧瀚霆應援淺粉紅：教主粉 */
+            --primary-color: #FFC0CB; 
+            --accent-color: #FF99AC;
+            --bg-color: #FFF5F7;
             --card-bg: #ffffff;
-            --text-main: #5f5a5a;
+            --text-main: #6B7280;
             --font-round: 'ZCOOL KuaiLe', cursive;
             --font-main: 'Noto Sans TC', sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-main); }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
-        .container { background: var(--card-bg); width: 100%; max-width: 480px; padding: 30px 20px; border-radius: 40px; box-shadow: 0 15px 35px rgba(255, 183, 197, 0.3); }
         
-        h1 { text-align: center; font-size: 2rem; color: var(--primary-color); margin-bottom: 20px; font-family: var(--font-round); text-shadow: 1px 1px 0px white; }
+        .container { 
+            background: var(--card-bg); 
+            width: 100%; 
+            max-width: 480px; 
+            padding: 30px 20px; 
+            border-radius: 40px; 
+            box-shadow: 0 15px 40px rgba(255, 192, 203, 0.4); 
+            text-align: center;
+        }
+        
+        h1 { font-size: 2.2rem; color: var(--accent-color); margin-bottom: 20px; font-family: var(--font-round); text-shadow: 2px 2px 0px #fff; }
 
         .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .category-btn { padding: 20px; background: #fff9fa; border: 2px solid var(--primary-color); border-radius: 25px; text-align: center; cursor: pointer; transition: 0.3s; color: var(--primary-color); font-weight: bold; font-size: 1.1rem; }
-        .category-btn:hover { background: var(--primary-color); color: white; }
+        .category-btn { 
+            padding: 25px 10px; background: #fff9fa; border: 2px solid var(--primary-color); 
+            border-radius: 25px; cursor: pointer; transition: 0.3s; 
+            color: var(--accent-color); font-weight: bold; font-size: 1.2rem; font-family: var(--font-round);
+        }
+        .category-btn:hover { background: var(--primary-color); color: white; transform: translateY(-3px); }
 
         .choice-card { 
-            background: #fff9fa; border: 3px solid #ffeef1; border-radius: 30px; 
-            text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 15px; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center; padding-bottom: 15px;
+            background: #fff; border: 4px solid #fff1f3; border-radius: 35px; 
+            cursor: pointer; transition: 0.3s; margin-bottom: 18px; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
-        .choice-card:hover { border-color: var(--primary-color); transform: scale(1.02); background: white; }
-        .song-img { width: 100%; height: 240px; object-fit: cover; background: #eee; margin-bottom: 10px; border-bottom: 1px solid #ffeef1; }
-        .song-label { font-size: 1.2rem; font-weight: 700; padding: 0 10px; color: var(--text-main); min-height: 2.4em; display: flex; align-items: center; }
+        .choice-card:hover { border-color: var(--primary-color); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255, 192, 203, 0.3); }
+        
+        .song-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: #fdf2f4; }
+        .song-label { font-size: 1.3rem; font-weight: 700; padding: 20px 15px; color: var(--text-main); font-family: var(--font-main); }
 
-        .progress-bar { width: 100%; height: 10px; background: #ffeef1; border-radius: 10px; margin-bottom: 15px; }
-        #progress-fill { width: 0%; height: 100%; background: var(--primary-color); border-radius: 10px; transition: 0.4s; }
+        .progress-bar { width: 100%; height: 12px; background: #fff1f3; border-radius: 20px; margin-bottom: 20px; }
+        #progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); border-radius: 20px; transition: 0.4s; }
 
-        #capture-area { background: white; padding: 30px 20px; border-radius: 35px; text-align: center; border: 3px solid var(--primary-color); margin-bottom: 20px; }
-        .share-header { color: var(--primary-color); font-size: 1.6rem; font-weight: bold; margin-bottom: 20px; font-family: var(--font-round); }
-        .result-item { display: flex; align-items: center; padding: 10px; background: #fff9fa; margin-bottom: 10px; border-radius: 15px; }
-        .rank-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; margin-right: 15px; border: 2px solid var(--primary-color); }
-        .rank-num { font-size: 1.3rem; font-weight: 900; color: var(--primary-color); margin-right: 15px; font-family: var(--font-round); }
+        #capture-area { background: #fff; padding: 35px 20px; border-radius: 35px; text-align: center; border: 4px solid var(--primary-color); }
+        .share-header { color: var(--accent-color); font-size: 1.8rem; font-weight: bold; margin-bottom: 25px; font-family: var(--font-round); }
+        
+        .result-item { display: flex; align-items: center; padding: 12px; background: #fff9fa; margin-bottom: 12px; border-radius: 20px; border: 1px solid #fff1f3; }
+        .rank-img { width: 65px; height: 65px; border-radius: 15px; object-fit: cover; margin-right: 15px; border: 2px solid var(--primary-color); }
+        .rank-num { font-size: 1.6rem; font-weight: 900; color: var(--accent-color); margin-right: 15px; font-family: var(--font-round); width: 25px; }
 
-        .btn { width: 100%; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 25px; font-size: 1.1rem; cursor: pointer; font-weight: bold; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(255, 183, 197, 0.4); }
-        .btn-download { background: #ff9eb3; }
+        .btn { width: 100%; padding: 18px; background: var(--accent-color); color: white; border: none; border-radius: 25px; font-size: 1.15rem; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; box-shadow: 0 8px 20px rgba(255, 153, 172, 0.4); }
+        .btn:hover { background: #ff7a94; transform: scale(1.02); }
+        .btn-download { background: #6EE7B7; box-shadow: 0 8px 20px rgba(110, 231, 183, 0.4); }
+        .btn-download:hover { background: #34D399; }
     </style>
 </head>
 <body>
@@ -63,18 +81,18 @@
             <div class="category-btn" onclick="preset('fast')">⚡ 快歌</div>
             <div class="category-btn" onclick="preset('slow')">🌙 慢歌</div>
         </div>
-        <p style="text-align: center; color: var(--primary-color); font-size: 0.9rem; font-weight: bold;">選出你最心儀的歌曲 Top 5！</p>
+        <p style="color: var(--accent-color); font-weight: bold; font-family: var(--font-round);">LittlePinks, Ready to Choose?</p>
     </div>
 
     <div id="compare-view" class="view">
         <div class="progress-bar"><div id="progress-fill"></div></div>
-        <p id="round-info" style="text-align: center; color: var(--primary-color); font-weight: bold; margin-bottom: 10px; font-family: var(--font-round);"></p>
+        <p id="round-info" style="color: var(--accent-color); font-weight: bold; margin-bottom: 15px; font-family: var(--font-round);"></p>
         <div class="choice-card" onclick="makeChoice(0)">
-            <img id="img-a" class="song-img" src="" alt="Song A">
+            <img id="img-a" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Loading...'">
             <div id="option-a" class="song-label"></div>
         </div>
         <div class="choice-card" onclick="makeChoice(1)">
-            <img id="img-b" class="song-img" src="" alt="Song B">
+            <img id="img-b" class="song-img" src="" onerror="this.src='https://placehold.co/600x600/ffc0cb/ffffff?text=Loading...'">
             <div id="option-b" class="song-label"></div>
         </div>
     </div>
@@ -83,49 +101,47 @@
         <div id="capture-area">
             <div class="share-header">My Top 5 Picks</div>
             <div id="top5-list"></div>
-            <div style="font-size: 0.8rem; color: #ffb7c5; font-family: var(--font-round); margin-top: 10px;">Anson Lo Music Ranking</div>
+            <p style="margin-top:15px; color: var(--primary-color); font-family: var(--font-round); font-size: 0.9rem;">ansonlohonting-intlfanclub.com</p>
         </div>
-        <button class="btn btn-download" onclick="downloadImage()">📸 儲存美照分享</button>
-        <button class="btn" onclick="location.reload()">再玩一次 ↺</button>
+        <button class="btn btn-download" onclick="downloadImage()">📸 儲存結果分享</button>
+        <button class="btn" onclick="location.reload()">再玩一次</button>
     </div>
 </div>
 
 <script>
-    // 幫你找好的 Anson Lo 單曲封面連結
+    // 更新為穩定、清晰的音樂平台封面連結
     const songImages = {
-        // 快歌
-        "一所懸命": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/a4/08/5b/a4085b30-e32f-410a-6e54-3e970b4a4f00/artwork.jpg/600x600bf.jpg",
-        "Megahit": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/0d/1d/15/0d1d1544-773a-440d-9b16-43b95603709b/cover.jpg/600x600bf.jpg",
-        "Megahit Megamix": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/55/e3/d4/55e3d489-4a0b-1934-5183-f8646b30649f/196626359670.jpg/600x600bf.jpg",
-        "Mr. Stranger": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/7e/15/e4/7e15e45c-062e-9d0b-60a3-f09c73595914/196626639598.jpg/600x600bf.jpg",
-        "King Kong": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/64/00/01/64000109-7d88-f542-f8c6-70e28f3521d8/196871321941.jpg/600x600bf.jpg",
-        "MONEY": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/95/95/43/959543e4-3990-0931-18e4-84d94344445f/196362141548.jpg/600x600bf.jpg",
-        "Nah": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/71/97/81/7197813a-9774-6330-804d-616954203102/4894879203612.jpg/600x600bf.jpg",
-        "ON": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/91/9f/61/919f61b0-9515-3732-2114-1e5f8f81a798/4894879204480.jpg/600x600bf.jpg",
-        "Hey Hey OK!": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/5a/63/87/5a638708-3051-4043-4171-8777174e7978/4894879206774.jpg/600x600bf.jpg",
-        "Heartbreaker": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/10/a5/1b/10a51be5-5942-8395-585a-0639e443836d/4894879207009.jpg/600x600bf.jpg",
-        "Lemonade": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/68/7f/0f/687f0f62-75ca-1956-621f-99881827471a/4894879207863.jpg/600x600bf.jpg",
-        "Gimme Gimme": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/5b/c2/f3/5bc2f360-6d3f-561b-9447-e547bc86e098/4894879208037.jpg/600x600bf.jpg",
-        "Charisma": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/8e/3a/0c/8e3a0c7b-7b0b-3315-9c86-107065096f8c/4894879208228.jpg/600x600bf.jpg",
-        "Trippin' Up": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/1f/26/66/1f2666da-2580-c114-13df-c8f9461d6ec6/4894879208464.jpg/600x600bf.jpg",
-        "Take That": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/21/72/74/2172740e-5401-209a-637a-42cc61099f0e/4894879208631.jpg/600x600bf.jpg",
-        "Rude Boy": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c4/c4/8c/c4c48c5c-76be-5727-4632-6a5688d0f19c/4894879208761.jpg/600x600bf.jpg",
+        "一所懸命": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/a4/08/5b/a4085b30-e32f-410a-6e54-3e970b4a4f00/artwork.jpg/600x600bb.jpg",
+        "Megahit": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/0d/1d/15/0d1d1544-773a-440d-9b16-43b95603709b/cover.jpg/600x600bb.jpg",
+        "Megahit Megamix": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/55/e3/d4/55e3d489-4a0b-1934-5183-f8646b30649f/196626359670.jpg/600x600bb.jpg",
+        "Mr. Stranger": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/7e/15/e4/7e15e45c-062e-9d0b-60a3-f09c73595914/196626639598.jpg/600x600bb.jpg",
+        "King Kong": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/64/00/01/64000109-7d88-f542-f8c6-70e28f3521d8/196871321941.jpg/600x600bb.jpg",
+        "MONEY": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/95/95/43/959543e4-3990-0931-18e4-84d94344445f/196362141548.jpg/600x600bb.jpg",
+        "Nah": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/71/97/81/7197813a-9774-6330-804d-616954203102/4894879203612.jpg/600x600bb.jpg",
+        "ON": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/91/9f/61/919f61b0-9515-3732-2114-1e5f8f81a798/4894879204480.jpg/600x600bb.jpg",
+        "Hey Hey OK!": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/5a/63/87/5a638708-3051-4043-4171-8777174e7978/4894879206774.jpg/600x600bb.jpg",
+        "Heartbreaker": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/10/a5/1b/10a51be5-5942-8395-585a-0639e443836d/4894879207009.jpg/600x600bb.jpg",
+        "Lemonade": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/68/7f/0f/687f0f62-75ca-1956-621f-99881827471a/4894879207863.jpg/600x600bb.jpg",
+        "Gimme Gimme": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/5b/c2/f3/5bc2f360-6d3f-561b-9447-e547bc86e098/4894879208037.jpg/600x600bb.jpg",
+        "Charisma": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/8e/3a/0c/8e3a0c7b-7b0b-3315-9c86-107065096f8c/4894879208228.jpg/600x600bb.jpg",
+        "Trippin' Up": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/1f/26/66/1f2666da-2580-c114-13df-c8f9461d6ec6/4894879208464.jpg/600x600bb.jpg",
+        "Take That": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/21/72/74/2172740e-5401-209a-637a-42cc61099f0e/4894879208631.jpg/600x600bb.jpg",
+        "Rude Boy": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c4/c4/8c/c4c48c5c-76be-5727-4632-6a5688d0f19c/4894879208761.jpg/600x600bb.jpg",
 
-        // 慢歌
-        "Burn Out": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/80/7e/4d/807e4d82-e565-9831-27f9-867160759f27/cover.jpg/600x600bf.jpg",
-        "角落生物": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/58/0b/df/580bdf51-610b-80df-269c-2798e2106e23/cover.jpg/600x600bf.jpg",
-        "神隊友": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/05/2f/1b/052f1b40-2782-9596-f9f3-8b7a602c3325/cover.jpg/600x600bf.jpg",
-        "EGO": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/5a/c3/02/5ac3027b-e771-55ef-9689-53e7c816008b/cover.jpg/600x600bf.jpg",
-        "不可愛教主": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5f/86/e3/5f86e3f4-3081-3069-b56e-827c191a3290/196292211991.jpg/600x600bf.jpg",
-        "永順街39號": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/84/f1/a0/84f1a04d-61c1-482f-8706-03f7e6512683/196871891963.jpg/600x600bf.jpg",
-        "同居陌生人": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/7b/4b/36/7b4b3602-532a-579c-9c98-43d937000d6b/196589998185.jpg/600x600bf.jpg",
-        "偷情": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/6c/42/97/6c42976d-9786-8803-f66e-f7808298711e/4894879201557.jpg/600x600bf.jpg",
-        "浪漫殺死巨蟹座": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/21/e2/2e/21e22e5e-63f5-7634-1c4b-f725916c0260/4894879201885.jpg/600x600bf.jpg",
-        "特別約會儀式": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/05/27/7d/05277d01-e283-a9d0-0870-13f8903c72b0/4894879202530.jpg/600x600bf.jpg",
-        "致我": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/80/4e/95/804e9515-b778-5778-4375-9e6634d0b0ef/4894879204688.jpg/600x600bf.jpg",
-        "你都有今日": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/28/73/45/28734568-154a-d66a-1294-b1539247d4e5/4894879205562.jpg/600x600bf.jpg",
-        "本命": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/24/f1/a0/24f1a09d-0912-321a-641a-602931a78912/4894879208358.jpg/600x600bf.jpg",
-        "我的支持型伴侶": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/30/f0/a0/30f0a09d-0842-311a-601a-602831a78912/4894879208888.jpg/600x600bf.jpg"
+        "Burn Out": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/80/7e/4d/807e4d82-e565-9831-27f9-867160759f27/cover.jpg/600x600bb.jpg",
+        "角落生物": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/58/0b/df/580bdf51-610b-80df-269c-2798e2106e23/cover.jpg/600x600bb.jpg",
+        "神隊友": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/05/2f/1b/052f1b40-2782-9596-f9f3-8b7a602c3325/cover.jpg/600x600bb.jpg",
+        "EGO": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/5a/c3/02/5ac3027b-e771-55ef-9689-53e7c816008b/cover.jpg/600x600bb.jpg",
+        "不可愛教主": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5f/86/e3/5f86e3f4-3081-3069-b56e-827c191a3290/196292211991.jpg/600x600bb.jpg",
+        "永順街39號": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/84/f1/a0/84f1a04d-61c1-482f-8706-03f7e6512683/196871891963.jpg/600x600bb.jpg",
+        "同居陌生人": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/7b/4b/36/7b4b3602-532a-579c-9c98-43d937000d6b/196589998185.jpg/600x600bb.jpg",
+        "偷情": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/6c/42/97/6c42976d-9786-8803-f66e-f7808298711e/4894879201557.jpg/600x600bb.jpg",
+        "浪漫殺死巨蟹座": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/21/e2/2e/21e22e5e-63f5-7634-1c4b-f725916c0260/4894879201885.jpg/600x600bb.jpg",
+        "特別約會儀式": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/05/27/7d/05277d01-e283-a9d0-0870-13f8903c72b0/4894879202530.jpg/600x600bb.jpg",
+        "致我": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/80/4e/95/804e9515-b778-5778-4375-9e6634d0b0ef/4894879204688.jpg/600x600bb.jpg",
+        "你都有今日": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/28/73/45/28734568-154a-d66a-1294-b1539247d4e5/4894879205562.jpg/600x600bb.jpg",
+        "本命": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/24/f1/a0/24f1a09d-0912-321a-641a-602931a78912/4894879208358.jpg/600x600bb.jpg",
+        "我的支持型伴侶": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/30/f0/a0/30f0a09d-0842-311a-601a-602831a78912/4894879208888.jpg/600x600bb.jpg"
     };
 
     const presets = {
@@ -134,11 +150,6 @@
     };
 
     let items = [], scores = {}, leftIdx = 0, rightIdx = 1;
-
-    function getImg(song) {
-        // 如果找不到圖片，顯示粉色佔位圖
-        return songImages[song] || "https://placehold.co/600x600/ffb7c5/ffffff?text=Anson+Lo";
-    }
 
     function preset(type) {
         items = [...presets[type]].sort(() => Math.random() - 0.5);
@@ -157,12 +168,13 @@
     }
 
     function updateUI() {
-        document.getElementById('option-a').textContent = items[leftIdx];
-        document.getElementById('img-a').src = getImg(items[leftIdx]);
-        document.getElementById('option-b').textContent = items[rightIdx];
-        document.getElementById('img-b').src = getImg(items[rightIdx]);
+        const a = items[leftIdx], b = items[rightIdx];
+        document.getElementById('option-a').textContent = a;
+        document.getElementById('img-a').src = songImages[a] || "";
+        document.getElementById('option-b').textContent = b;
+        document.getElementById('img-b').src = songImages[b] || "";
         document.getElementById('progress-fill').style.width = (rightIdx / items.length * 100) + '%';
-        document.getElementById('round-info').textContent = `對決中 ${rightIdx} / ${items.length}`;
+        document.getElementById('round-info').textContent = `Step ${rightIdx} / ${items.length}`;
     }
 
     function showResults() {
@@ -172,8 +184,8 @@
         document.getElementById('top5-list').innerHTML = top5.map((song, i) => `
             <div class="result-item">
                 <div class="rank-num">${i + 1}</div>
-                <img class="rank-img" src="${getImg(song)}" alt="${song}">
-                <div style="font-weight:700; flex:1; text-align:left;">${song}</div>
+                <img class="rank-img" src="${songImages[song]}" alt="${song}">
+                <div style="font-weight:700; flex:1; text-align:left; color:#555;">${song}</div>
             </div>
         `).join('');
     }
@@ -185,25 +197,17 @@
 
     function downloadImage() {
         const btn = document.querySelector('.btn-download');
-        const originalText = btn.textContent;
-        btn.textContent = "圖片生成中...";
-        btn.disabled = true;
-
+        btn.textContent = "生成中...";
         html2canvas(document.getElementById('capture-area'), { 
-            backgroundColor: "#fff",
+            backgroundColor: "#ffffff",
             useCORS: true,
-            scale: 2
+            scale: 2 
         }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `AnsonLo-Top5.png`;
+            link.download = `MyALTop5.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
-            btn.textContent = originalText;
-            btn.disabled = false;
-        }).catch(e => {
-            alert("生成失敗，請嘗試手動截圖。");
-            btn.textContent = originalText;
-            btn.disabled = false;
+            btn.textContent = "📸 儲存結果分享";
         });
     }
 </script>
