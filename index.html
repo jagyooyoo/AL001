@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Versus - 音樂決定器</title>
+    <title>Anson Lo 歌曲決定器 - Versus</title>
     <style>
         :root {
-            --primary-color: #818cf8;
-            --primary-hover: #6366f1;
-            --bg-color: #f1f5f9;
+            --primary-color: #f472b6; /* 採用經典粉色系 */
+            --primary-hover: #db2777;
+            --bg-color: #fdf2f8;
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
@@ -22,13 +22,12 @@
         h1 { text-align: center; font-size: 2.2rem; color: var(--primary-color); margin-bottom: 8px; letter-spacing: 1px; }
         .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; }
 
-        /* 類別選擇選單 */
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .category-btn { 
-            padding: 25px 15px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; 
+            padding: 25px 15px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 16px; 
             text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .category-btn:hover { border-color: var(--primary-color); background: #f5f7ff; transform: translateY(-5px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1); }
+        .category-btn:hover { border-color: var(--primary-color); background: #ffe4e6; transform: translateY(-5px); box-shadow: 0 4px 12px rgba(244, 114, 182, 0.2); }
         .category-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
         .category-name { font-weight: bold; font-size: 1.1rem; color: var(--text-main); }
 
@@ -36,33 +35,28 @@
         .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 35%; height: 1px; background: #e2e8f0; }
         .divider::before { left: 0; } .divider::after { right: 0; }
 
-        /* 各階段視圖 */
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         textarea { width: 100%; height: 180px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; resize: none; margin-bottom: 20px; outline: none; font-size: 1rem; line-height: 1.5; }
-        textarea:focus { border-color: var(--primary-color); }
         .btn { width: 100%; padding: 16px; background: var(--primary-color); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .btn-outline { background: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); margin-top: 12px; }
 
-        /* 比較畫面 */
         .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
         .choice-card { 
-            padding: 30px 15px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 18px; text-align: center; 
+            padding: 30px 15px; background: #fff1f2; border: 2px solid #ffe4e6; border-radius: 18px; text-align: center; 
             cursor: pointer; font-size: 1.2rem; font-weight: bold; min-height: 150px;
             display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
-        .choice-card:hover { border-color: var(--primary-color); background: #eef2ff; transform: scale(1.03); }
+        .choice-card:hover { border-color: var(--primary-color); background: #ffe4e6; transform: scale(1.03); }
         .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
         #progress-fill { width: 0%; height: 100%; background: var(--primary-color); transition: 0.4s; }
 
-        /* 結果排名 */
         .result-container { max-height: 400px; overflow-y: auto; padding-right: 5px; }
-        .result-item { display: flex; align-items: center; padding: 15px; background: #f8fafc; margin-bottom: 10px; border-radius: 12px; border-left: 5px solid var(--primary-color); }
+        .result-item { display: flex; align-items: center; padding: 15px; background: #fff1f2; margin-bottom: 10px; border-radius: 12px; border-left: 5px solid var(--primary-color); }
         .rank { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); margin-right: 20px; min-width: 25px; }
-        .song-name { font-weight: bold; font-size: 1.05rem; }
 
         @media (max-width: 480px) { .compare-grid { grid-template-columns: 1fr; } .category-grid { grid-template-columns: 1fr; } }
     </style>
@@ -70,18 +64,18 @@
 <body>
 
 <div class="container">
-    <h1>Music Versus</h1>
-    <p class="subtitle">選出你的年度最佳單曲</p>
+    <h1>Anson Lo Versus</h1>
+    <p class="subtitle">選出你最心儀的「本命」歌曲</p>
 
     <div id="menu-view" class="view active">
         <div class="category-grid">
-            <div class="category-btn" onclick="preset('slow')">
-                <span class="category-icon">🌙</span>
-                <span class="category-name">慢歌</span>
-            </div>
             <div class="category-btn" onclick="preset('fast')">
                 <span class="category-icon">⚡</span>
                 <span class="category-name">快歌</span>
+            </div>
+            <div class="category-btn" onclick="preset('slow')">
+                <span class="category-icon">🌙</span>
+                <span class="category-name">慢歌</span>
             </div>
             <div class="category-btn" onclick="preset('duet')">
                 <span class="category-icon">👥</span>
@@ -92,14 +86,14 @@
                 <span class="category-name">大碟歌</span>
             </div>
         </div>
-        <div class="divider">或輸入你的歌單</div>
-        <button class="btn btn-outline" onclick="showView('input-view')">手動輸入歌曲</button>
+        <div class="divider">或輸入其他歌單</div>
+        <button class="btn btn-outline" onclick="showView('input-view')">自定義歌曲比較</button>
     </div>
 
     <div id="input-view" class="view">
         <textarea id="items-input" placeholder="請輸入歌名，每行一首..."></textarea>
         <button class="btn" onclick="startComparison()">開始淘汰賽</button>
-        <button class="btn btn-outline" onclick="showView('menu-view')">返回組別</button>
+        <button class="btn btn-outline" onclick="showView('menu-view')">返回選單</button>
     </div>
 
     <div id="compare-view" class="view">
@@ -120,12 +114,19 @@
 </div>
 
 <script>
-    // 這裡可以自行修改預設歌曲
     const presets = {
-        slow: ["說好的幸福呢", "十年", "刻在我心底的名字", "修煉愛情", "你就不要想起我", "那些年"],
-        fast: ["三天三夜", "派對動物", "離開地球表面", "第一天", "玫瑰少年", "Bad Boy"],
-        duet: ["屋頂", "珊瑚海", "小酒窩", "因為愛情", "你最珍貴", "手心的太陽"],
-        album: ["非第一主打 A", "驚喜收錄 B", "大碟隱藏曲 C", "實驗性作品 D", "概念曲 E"]
+        fast: [
+            "一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", 
+            "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", 
+            "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy"
+        ],
+        slow: [
+            "Burn Out", "角落生物", "神隊友", "EGO", "不可愛教主", 
+            "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", 
+            "致我", "你都有今日", "本命", "我的支持型伴侶"
+        ],
+        duet: ["神隊友 (合唱版)", "及時行樂"],
+        album: ["教主專輯遺珠"]
     };
 
     let items = [], comparisons = [], currentIndex = 0, scores = {};
@@ -138,8 +139,7 @@
     function startComparison() {
         const text = document.getElementById('items-input').value.trim();
         items = text.split('\n').map(i => i.trim()).filter(i => i !== "");
-        if (items.length < 2) return alert("請至少輸入兩首歌！");
-
+        if (items.length < 2) return alert("請至少選擇兩首歌！");
         scores = {}; items.forEach(i => scores[i] = 0);
         comparisons = [];
         for (let i = 0; i < items.length; i++) {
@@ -167,7 +167,7 @@
         document.getElementById('option-b').textContent = pair[1];
         const progress = (currentIndex / comparisons.length) * 100;
         document.getElementById('progress-fill').style.width = progress + '%';
-        document.getElementById('round-info').textContent = `正在進行第 ${currentIndex + 1} / ${comparisons.length} 組對決`;
+        document.getElementById('round-info').textContent = `對決回合：${currentIndex + 1} / ${comparisons.length}`;
     }
 
     function showResults() {
