@@ -47,7 +47,7 @@
         
         h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 5px; font-family: var(--font-round); }
 
-        .view { display: none; flex: 1; min-height: 0; } /* min-height: 0 是 flex 縮放關鍵 */
+        .view { display: none; flex: 1; min-height: 0; }
         .view.active { display: flex; flex-direction: column; justify-content: center; animation: fadeIn 0.3s ease-out; }
 
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
@@ -57,21 +57,19 @@
             font-weight: bold; font-size: 1.1rem; font-family: var(--font-round);
         }
 
-        /* 修正選擇卡片：使用 flex 分配空間 */
         .choice-card { 
-            background: #fff; border: 3px solid #fff1f3; border-radius: 20px; 
+            background: #fdf2f4; border: 3px solid #fff1f3; border-radius: 20px; 
             cursor: pointer; transition: 0.2s; margin-bottom: 8px; overflow: hidden;
             display: flex; flex-direction: column; 
-            flex: 1; /* 讓兩個卡片平分剩餘空間 */
-            min-height: 0;
+            flex: 1; min-height: 0;
         }
         .choice-card:hover { border-color: var(--primary-color); transform: scale(1.01); }
         
         .song-img { 
             width: 100%; 
-            flex: 1; /* 圖片佔據卡片主要空間 */
-            object-fit: cover; /* 如果想要完整看見圖，可改為 contain，但 cover 在對齊上較美觀 */
-            background: #fdf2f4; 
+            flex: 1; 
+            object-fit: contain; 
+            background: #000; 
             min-height: 0;
         }
         
@@ -85,11 +83,10 @@
 
         #round-info { font-size: 0.85rem; margin-bottom: 5px; color: var(--accent-color); font-family: var(--font-round); }
 
-        /* 結果清單優化 */
-        #capture-area { padding: 10px; border-radius: 20px; border: 3px solid var(--primary-color); margin-bottom: 8px; }
+        #capture-area { padding: 10px; border-radius: 20px; border: 3px solid var(--primary-color); margin-bottom: 8px; background: white; }
         .share-header { color: var(--accent-color); font-size: 1.3rem; margin-bottom: 10px; font-family: var(--font-round); }
         .result-item { display: flex; align-items: center; padding: 5px 10px; background: #fff9fa; margin-bottom: 4px; border-radius: 12px; }
-        .rank-img { width: 35px; height: 35px; border-radius: 6px; margin-right: 10px; }
+        .rank-img { width: 35px; height: 35px; border-radius: 6px; margin-right: 10px; object-fit: cover; }
         .rank-num { font-size: 1.1rem; font-weight: 900; color: var(--accent-color); width: 18px; font-family: var(--font-round); }
 
         .btn { width: 100%; padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 15px; font-size: 0.95rem; cursor: pointer; font-weight: bold; margin-top: 5px; }
@@ -106,7 +103,7 @@
             <div class="category-btn" onclick="preset('fast')">⚡ 快歌</div>
             <div class="category-btn" onclick="preset('slow')">🌙 慢歌</div>
         </div>
-        <p style="color: var(--accent-color); font-size: 0.85rem; font-family: var(--font-round);">神徒專屬抉擇</p>
+        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); letter-spacing: 1px;">神徒們，準備好選擇心水了嗎</p>
     </div>
 
     <div id="compare-view" class="view">
@@ -133,8 +130,21 @@
 </div>
 
 <script>
-    // [圖片連結物件維持不變，此處略過以節省篇幅，請使用上一版的 songImages 資料]
     const songImages = {
+        "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/1125.jpg?v=1701010621",
+        "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A14__1.jpg?v=1695549124",
+        "同居陌生人": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A13__1.jpg?v=1695549262",
+        "Mr. Stranger": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/500x500-1-1_1.jpg?v=1695549880",
+        "Megahit Megamix": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/500x500-1-2_1.jpg?v=1695550314",
+        "Megahit": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/500x500_1.jpg?v=1695550442",
+        "不可愛教主": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/500x500-2_1.jpg?v=1695550631",
+        "EGO": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/IMG_0439_1.jpg?v=1695550874",
+        "神隊友": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/IMG_9822_1.jpg?v=1695551039",
+        "角落生物": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/500x500-3-1_1.jpg?v=1695551148",
+        "Burn Out": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/500x500-2-4_1.jpg?v=1695551272",
+        "一所懸命": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/500x500-7_1.jpg?v=1695551374",
+        "深閨": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/AL_TheHomebodies.jpg?v=1713337402",
+        "My Life": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/MyLife.jpg?v=1704852791",
         "Hey Hey OK!": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/HeyHeyOK_5b657f7c-2ff3-4376-80ed-452ad2803d75.jpg?v=1721128550",
         "Heartbreaker": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/gempages_477370228297172218-0414c180-4fbb-4212-9807-45d6710807eb.png?v=1741015997",
         "致我": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/al_tome.jpg?v=1729668242",
@@ -150,26 +160,14 @@
         "Take That": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
         "Trippin' Up": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
         "你都有今日": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/The_time_is_always_now_cover_pic.png?v=1748233393",
-        "一所懸命": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Burn_Out_626b96e4-4d1c-4394-b153-60580798e29a.jpg",
-        "Megahit": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Megahit.jpg",
-        "Megahit Megamix": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Megahit_Megamix.jpg",
-        "Mr. Stranger": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Mr_Stranger.jpg",
         "Gimme Gimme": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Gimme_Gimme.jpg",
         "Charisma": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Charisma.jpg?v=1774409406",
-        "ON": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/ON.jpg",
-        "Burn Out": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Burn_Out.jpg",
-        "角落生物": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Corner_Creature.jpg",
-        "神隊友": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Teammate.jpg",
-        "EGO": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/EGO.jpg",
-        "不可愛教主": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Unlovable_Leader.jpg",
-        "同居陌生人": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Stranger_Under_The_Same_Roof.jpg",
-        "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Secret_Affair.jpg",
-        "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Special_Dating_Ritual.jpg"
+        "ON": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/ON.jpg"
     };
 
     const presets = {
-        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy"],
-        slow: ["Burn Out", "角落生物", "神隊友", "EGO", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶"]
+        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life"],
+        slow: ["Burn Out", "角落生物", "神隊友", "EGO", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
     };
 
     let items = [], scores = {}, leftIdx = 0, rightIdx = 1;
