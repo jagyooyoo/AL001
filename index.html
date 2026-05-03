@@ -36,8 +36,8 @@
             width: 90%; 
             max-width: 380px; 
             height: auto; 
-            max-height: 82vh; 
-            padding: 25px 20px; 
+            max-height: 85vh; 
+            padding: 25px 18px; 
             border-radius: 35px; 
             box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
             text-align: center; 
@@ -96,16 +96,39 @@
         #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: width 0.4s ease; }
         #round-info { font-size: 0.9rem; color: var(--accent-color); margin-bottom: 8px; font-family: var(--font-round); }
 
-        #capture-area { padding: 20px 15px; border-radius: 25px; border: 2px solid var(--primary-color); margin-bottom: 15px; background: white; }
+        #capture-area { padding: 18px 12px; border-radius: 25px; border: 2px solid var(--primary-color); margin-bottom: 20px; background: white; }
         .share-header { color: var(--accent-color); font-size: 1.4rem; margin-bottom: 15px; font-family: var(--font-round); }
-        .result-item { display: flex; align-items: center; padding: 8px 15px; background: #fffcfd; margin-bottom: 8px; border-radius: 16px; border: 1px solid #fff0f3; }
-        .rank-img { width: 45px; height: 45px; border-radius: 10px; margin-right: 12px; object-fit: cover; }
-        .rank-num { font-size: 1.3rem; font-weight: 900; color: var(--accent-color); width: 25px; }
+        .result-item { display: flex; align-items: center; padding: 8px 12px; background: #fffcfd; margin-bottom: 8px; border-radius: 16px; border: 1px solid #fff0f3; }
+        .rank-img { width: 42px; height: 42px; border-radius: 10px; margin-right: 12px; object-fit: cover; }
+        .rank-num { font-size: 1.3rem; font-weight: 900; color: var(--accent-color); width: 22px; text-align: center; }
 
-        .btn { padding: 14px; border-radius: 18px; font-size: 1rem; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; }
+        /* 【修正 2】底部按鈕新設計：精簡並排 */
+        .btn-group { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: 8px; 
+            margin-top: auto;
+        }
+        .btn { 
+            padding: 12px 5px; 
+            border-radius: 15px; 
+            font-size: 0.85rem; 
+            border: none; 
+            color: white; 
+            cursor: pointer; 
+            font-weight: bold; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 4px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .btn:active { transform: scale(0.95); opacity: 0.9; }
+        .btn-icon { font-size: 1.2rem; }
         .btn-share { background: #F472B6; } 
         .btn-download { background: #6EE7B7; }
-        .btn-reset { background: #D1D5DB; color: #4B5563; }
+        .btn-reset { background: #E5E7EB; color: #6B7280; }
     </style>
 </head>
 <body>
@@ -120,7 +143,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">神徒們，準備好選出心水了嗎？</p>
-        <div class="version-tag">v1.5.1-share-link-fix</div>
+        <div class="version-tag">v1.6.0-ui-optimized</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -140,13 +163,20 @@
 
     <div id="result-view" class="view">
         <div id="capture-area">
-            <div class="share-header">✨ Top 5 心水結果 ✨</div>
+            <div class="share-header">✨ 神徒之選 Top 5 ✨</div>
             <div id="top5-list"></div>
         </div>
+        
         <div class="btn-group">
-            <button class="btn btn-share" onclick="shareToSocial()">📢 分享給神徒</button>
-            <button class="btn btn-download" onclick="downloadImage()">💾 儲存結果圖</button>
-            <button class="btn btn-reset" onclick="location.reload()">重新挑戰</button>
+            <button class="btn btn-share" onclick="shareToSocial()">
+                <span class="btn-icon">📢</span>分享
+            </button>
+            <button id="dl-btn" class="btn btn-download" onclick="downloadImage()">
+                <span class="btn-icon">💾</span>儲存
+            </button>
+            <button class="btn btn-reset" onclick="location.reload()">
+                <span class="btn-icon">🔄</span>再玩
+            </button>
         </div>
     </div>
 </div>
@@ -176,125 +206,4 @@
         "Nah": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A15_1.jpg?v=1695548268",
         "浪漫殺死巨蟹座": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/cover_3000x3000-scaled_4b1a205b-4080-4aed-b631-3a05f2970d94.jpg?v=1694526945",
         "Lemonade": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/gempages_477370228297172218-74a952b7-5bd2-4609-9c56-079afa1cca63.png?v=1754586438",
-        "本命": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/19e978e22b24a827cda3e1554222064e.jpg?v=1774409729",
-        "我的支持型伴侶": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
-        "Rude Boy": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
-        "Take That": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
-        "Trippin' Up": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/KINDOM_6dedc92e-5427-4e92-97bc-eeda6a4c1f2c.jpg?v=1774408405",
-        "你都有今日": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/The_time_is_always_now_cover_pic.png?v=1748233393",
-        "Gimme Gimme": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Gimme_Gimme.jpg",
-        "Charisma": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/Charisma.jpg?v=1774409406",
-        "ON": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/ON.jpg"
-    };
-
-    const presets = {
-        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life", "EGO"],
-        slow: ["Burn Out", "角落生物", "神隊友", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
-    };
-
-    let items = [], scores = {}, currentRound = 0;
-    const MAX_ROUNDS = 25; 
-    let currentA = "", currentB = "";
-
-    function initGame(type) {
-        items = [...presets[type]].sort(() => Math.random() - 0.5);
-        scores = {}; items.forEach(item => scores[item] = 1000); 
-        currentRound = 0;
-        document.getElementById('global-back').style.display = 'flex';
-        showView('compare-view');
-        nextMatch();
-    }
-
-    function confirmReset() {
-        if (confirm("返回主選單？")) location.reload();
-    }
-
-    function nextMatch() {
-        currentRound++;
-        if (currentRound > MAX_ROUNDS) { 
-            document.getElementById('global-back').style.display = 'none';
-            showResults(); return; 
-        }
-        const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        let pivot = Math.floor(Math.random() * (items.length - 1));
-        currentA = sorted[pivot]; currentB = sorted[pivot + 1];
-        updateUI();
-    }
-
-    function handleChoice(idx) {
-        const winner = idx === 0 ? currentA : currentB;
-        const loser = idx === 0 ? currentB : currentA;
-        scores[winner] += 55;
-        scores[loser] -= 35;
-        nextMatch();
-    }
-
-    function updateUI() {
-        document.getElementById('img-a').src = songImages[currentA];
-        document.getElementById('img-b').src = songImages[currentB];
-        document.getElementById('option-a').textContent = currentA;
-        document.getElementById('option-b').textContent = currentB;
-        document.getElementById('progress-fill').style.width = (currentRound / MAX_ROUNDS * 100) + '%';
-        document.getElementById('round-info').textContent = `Round ${currentRound} / ${MAX_ROUNDS}`;
-    }
-
-    function showResults() {
-        showView('result-view');
-        const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        const top5 = sorted.slice(0, 5);
-        document.getElementById('top5-list').innerHTML = top5.map((song, i) => `
-            <div class="result-item">
-                <div class="rank-num">${i + 1}</div>
-                <img class="rank-img" src="${songImages[song]}">
-                <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.95rem;">${song}</div>
-            </div>
-        `).join('');
-    }
-
-    function showView(id) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    // 【修正 4】強化分享函數
-    async function shareToSocial() {
-        const captureArea = document.getElementById('capture-area');
-        const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", useCORS: true, scale: 2 });
-        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-        const file = new File([blob], 'AL_Top5.png', { type: 'image/png' });
-        
-        const shareUrl = window.location.href; // 自動獲取當前網址
-        const shareData = {
-            title: 'Anson Lo Versus',
-            text: `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n傳送門：`,
-            url: shareUrl,
-            files: [file]
-        };
-
-        try {
-            if (navigator.share && navigator.canShare(shareData)) {
-                await navigator.share(shareData);
-            } else {
-                throw new Error('Not supported');
-            }
-        } catch (err) {
-            // 如果不支援檔案分享，改為複製網址並提示下載
-            alert("此瀏覽器不支援直接分享圖片，請儲存結果圖後手動貼上連結：\n" + shareUrl);
-            downloadImage();
-        }
-    }
-
-    function downloadImage() {
-        const btn = document.querySelector('.btn-download');
-        btn.textContent = "處理中...";
-        html2canvas(document.getElementById('capture-area'), { backgroundColor: "#ffffff", useCORS: true, scale: 2 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `AnsonLo_Top5.png`;
-            link.href = canvas.toDataURL();
-            link.click();
-            btn.textContent = "💾 儲存結果圖";
-        });
-    }
-</script>
-</body>
-</html>
+        "本命": "
