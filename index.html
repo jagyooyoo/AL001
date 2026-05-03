@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Anson Lo Versus - 背景優化版</title>
+    <title>Anson Lo Versus - 背景放大版</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
+            /* 教主應援粉紅色調 */
             --primary-color: #FFC0CB; 
             --accent-color: #FF99AC;
             --bg-overlay: linear-gradient(135deg, rgba(255, 245, 247, 0.4) 0%, rgba(255, 192, 203, 0.3) 100%); 
@@ -23,11 +24,13 @@
         body { 
             display: flex; justify-content: center; align-items: center; 
             padding: env(safe-area-inset-top) 15px env(safe-area-inset-bottom) 15px;
-            /* 修正：將背景圖設定為重複平鋪，填滿所有空間 */
+            
+            /* 背景圖設定 */
             background: var(--bg-overlay), 
                         url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
-            background-size: contain; /* 確保圖片比例正確且不會被過度拉大 */
-            background-repeat: repeat; /* 讓圖片像壁紙一樣鋪滿全螢幕，解決留白問題 */
+            /* 【修正重點】將背景圖闊度放大 10% (即 110%)，並設為重複以徹底填滿頁面 */
+            background-size: 110% auto; /* 闊度放大 10%，高度比例縮放 */
+            background-repeat: repeat; /* 像壁紙一樣鋪滿全螢幕，解決留白問題 */
             background-position: center;
             background-attachment: fixed;
         }
@@ -130,7 +133,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.9rem; font-family: var(--font-round);">選擇你的心水神曲</p>
-        <div class="version-tag">v1.3.8-fullbg</div>
+        <div class="version-tag">v1.3.9-fullbg-plus</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -198,18 +201,18 @@
     };
 
     const presets = {
-        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life", "EGO"],
+        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", " Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life", "EGO"],
         slow: ["Burn Out", "角落生物", "神隊友", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
     };
 
-    let items = [], scores = {}, currentRound = 0, matchHistory = new Set();
+    let items = [], scores = {}, currentRound = 0;
     const MAX_ROUNDS = 25; 
     let currentA = "", currentB = "";
 
     function initGame(type) {
         items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {}; items.forEach(item => scores[item] = 1000); 
-        matchHistory.clear(); currentRound = 0;
+        currentRound = 0;
         document.getElementById('global-back').style.display = 'flex';
         showView('compare-view');
         nextMatch();
@@ -225,50 +228,25 @@
             document.getElementById('global-back').style.display = 'none';
             showResults(); return; 
         }
-
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        let found = false;
-        let attempts = 0;
-
-        while (!found && attempts < 100) {
-            attempts++;
-            let tA, tB;
-            if (currentRound <= 10) {
-                let idxA = Math.floor(Math.random() * items.length);
-                let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
-                tA = items[idxA]; tB = items[idxB];
-            } else {
-                let pivot = Math.random() > 0.3 ? Math.floor(Math.random() * 7) : Math.floor(Math.random() * (items.length - 1));
-                tA = sorted[pivot]; tB = sorted[pivot + 1];
-            }
-            const key = [tA, tB].sort().join('|');
-            if (tA !== tB && !matchHistory.has(key)) {
-                currentA = tA; currentB = tB;
-                matchHistory.add(key); found = true;
-            }
-        }
-        if (!found) { currentA = items[0]; currentB = items[1]; }
+        let pivot = Math.floor(Math.random() * (items.length - 1));
+        currentA = sorted[pivot]; currentB = sorted[pivot + 1];
         updateUI();
     }
 
     function handleChoice(idx) {
         const winner = idx === 0 ? currentA : currentB;
         const loser = idx === 0 ? currentB : currentA;
-        const winProb = 1 / (1 + Math.pow(10, (scores[loser] - scores[winner]) / 400));
-        const K = 55; 
-        const scoreChange = Math.round(K * (1 - winProb));
-        scores[winner] += scoreChange;
-        scores[loser] -= Math.floor(scoreChange * 0.8);
+        scores[winner] += 55;
+        scores[loser] -= 35;
         nextMatch();
     }
 
     function updateUI() {
-        const imgA = document.getElementById('img-a');
-        const imgB = document.getElementById('img-b');
+        document.getElementById('img-a').src = songImages[currentA];
+        document.getElementById('img-b').src = songImages[currentB];
         document.getElementById('option-a').textContent = currentA;
         document.getElementById('option-b').textContent = currentB;
-        imgA.src = songImages[currentA];
-        imgB.src = songImages[currentB];
         document.getElementById('progress-fill').style.width = (currentRound / MAX_ROUNDS * 100) + '%';
         document.getElementById('round-info').textContent = `心水決戰：Round ${currentRound}/${MAX_ROUNDS}`;
     }
