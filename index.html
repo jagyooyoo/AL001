@@ -49,14 +49,8 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
         
-        h1 { 
-            font-size: 1.6rem; 
-            color: var(--accent-color); 
-            margin-bottom: 18px; 
-            font-family: var(--font-round); 
-        }
+        h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 18px; font-family: var(--font-round); }
 
-        /* 【修正 1】返回鍵改為屋仔圖形 */
         .back-btn {
             position: absolute; top: 22px; left: 20px; 
             background: rgba(255, 255, 255, 0.9);
@@ -96,8 +90,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
         .song-img { width: 100%; flex: 1; object-fit: cover; background: #fdfdfd; min-height: 0; }
-        
-        /* 確保歌名樣式正確 */
         .song-label { font-size: 1rem; font-weight: 700; padding: 12px 5px; color: #555; background: #fff; }
 
         .progress-bar { width: 100%; height: 8px; background: #f0f0f0; border-radius: 10px; margin-bottom: 20px; }
@@ -128,7 +120,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">神徒們，準備好選出心水了嗎？</p>
-        <div class="version-tag">v1.5.0-home-fix</div>
+        <div class="version-tag">v1.5.1-share-link-fix</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -237,7 +229,6 @@
         nextMatch();
     }
 
-    // 【修正 2】確保 updateUI 正確填充歌名
     function updateUI() {
         document.getElementById('img-a').src = songImages[currentA];
         document.getElementById('img-b').src = songImages[currentB];
@@ -265,19 +256,30 @@
         document.getElementById(id).classList.add('active');
     }
 
+    // 【修正 4】強化分享函數
     async function shareToSocial() {
-        const canvas = await html2canvas(document.getElementById('capture-area'), { backgroundColor: "#ffffff", useCORS: true, scale: 2 });
+        const captureArea = document.getElementById('capture-area');
+        const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", useCORS: true, scale: 2 });
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
         const file = new File([blob], 'AL_Top5.png', { type: 'image/png' });
+        
+        const shareUrl = window.location.href; // 自動獲取當前網址
         const shareData = {
             title: 'Anson Lo Versus',
-            text: `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！`,
+            text: `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n傳送門：`,
+            url: shareUrl,
             files: [file]
         };
-        if (navigator.share && navigator.canShare(shareData)) {
-            await navigator.share(shareData);
-        } else {
-            alert("已複製連結，請自行儲存圖片分享！");
+
+        try {
+            if (navigator.share && navigator.canShare(shareData)) {
+                await navigator.share(shareData);
+            } else {
+                throw new Error('Not supported');
+            }
+        } catch (err) {
+            // 如果不支援檔案分享，改為複製網址並提示下載
+            alert("此瀏覽器不支援直接分享圖片，請儲存結果圖後手動貼上連結：\n" + shareUrl);
             downloadImage();
         }
     }
