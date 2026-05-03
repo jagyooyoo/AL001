@@ -92,7 +92,6 @@
         }
         .choice-card:active { transform: scale(0.96); }
         
-        /* 確保內容不會阻擋點擊事件 */
         .song-img { width: 100%; flex: 1; object-fit: cover; background: #fdfdfd; min-height: 0; pointer-events: none; }
         .song-label { font-size: 1rem; font-weight: 700; padding: 12px 5px; color: #555; background: #fff; pointer-events: none; display: block !important; }
 
@@ -128,7 +127,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">神徒們，準備好選出心水未？</p>
-        <div class="version-tag">v1.6.3-fix-label</div>
+        <div class="version-tag">v1.6.4-share-fix</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -232,7 +231,6 @@
         while (!found && attempts < 100) {
             attempts++;
             let tA, tB;
-
             if (currentRound <= 12) {
                 let idxA = Math.floor(Math.random() * items.length);
                 let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
@@ -241,7 +239,6 @@
                 let pivot = Math.floor(Math.random() * (items.length - 1));
                 tA = sorted[pivot]; tB = sorted[pivot + 1];
             }
-
             const key = [tA, tB].sort().join('|');
             if (tA !== tB && !matchHistory.has(key)) {
                 currentA = tA; currentB = tB;
@@ -249,7 +246,6 @@
                 found = true;
             }
         }
-        
         if (!found) { currentA = sorted[0]; currentB = sorted[1]; }
         updateUI();
     }
@@ -257,27 +253,18 @@
     function handleChoice(idx) {
         const winner = idx === 0 ? currentA : currentB;
         const loser = idx === 0 ? currentB : currentA;
-        
         const Ea = 1 / (1 + Math.pow(10, (scores[loser] - scores[winner]) / 400));
         const K = 60;
         scores[winner] += Math.round(K * (1 - Ea));
         scores[loser] -= Math.round(K * (1 - Ea));
-        
         nextMatch();
     }
 
     function updateUI() {
-        // 修正 2: 強制確保 DOM 更新並顯示歌名
-        const labelA = document.getElementById('option-a');
-        const labelB = document.getElementById('option-b');
-        const imgA = document.getElementById('img-a');
-        const imgB = document.getElementById('img-b');
-
-        labelA.textContent = currentA;
-        labelB.textContent = currentB;
-        imgA.src = songImages[currentA];
-        imgB.src = songImages[currentB];
-
+        document.getElementById('option-a').textContent = currentA;
+        document.getElementById('option-b').textContent = currentB;
+        document.getElementById('img-a').src = songImages[currentA];
+        document.getElementById('img-b').src = songImages[currentB];
         document.getElementById('progress-fill').style.width = (currentRound / MAX_ROUNDS * 100) + '%';
         document.getElementById('round-info').textContent = `Round ${currentRound} / ${MAX_ROUNDS}`;
     }
@@ -285,8 +272,7 @@
     function showResults() {
         showView('result-view');
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        const top5 = sorted.slice(0, 5);
-        document.getElementById('top5-list').innerHTML = top5.map((song, i) => `
+        document.getElementById('top5-list').innerHTML = sorted.slice(0, 5).map((song, i) => `
             <div class="result-item">
                 <div class="rank-num">${i + 1}</div>
                 <img class="rank-img" src="${songImages[song]}">
@@ -306,16 +292,30 @@
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
         const file = new File([blob], 'AL_Top5.png', { type: 'image/png' });
         
+        const shareUrl = window.location.href;
+        const shareText = `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n傳送門：${shareUrl}`;
+
         if (navigator.share) {
             try { 
                 await navigator.share({ 
                     files: [file], 
                     title: 'Anson Lo Versus', 
-                    text: '這是我選出的心水 Top 5！你也來挑戰看看吧！' 
+                    text: shareText
                 }); 
-            } catch(e) {}
+            } catch(e) {
+                try {
+                    await navigator.share({
+                        title: 'Anson Lo Versus',
+                        text: shareText,
+                        url: shareUrl
+                    });
+                } catch(err) {
+                    alert("無法分享，請儲存圖片後手動複製連結：\n" + shareUrl);
+                    downloadImage();
+                }
+            }
         } else {
-            alert("請儲存圖片後手動分享！");
+            alert("瀏覽器不支援分享，請儲存圖片後手動複製連結：\n" + shareUrl);
             downloadImage();
         }
     }
