@@ -24,7 +24,7 @@
         .container { 
             background: var(--card-bg); width: 95%; max-width: 420px; max-height: 98vh; 
             padding: 15px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255,192,203,0.3); 
-            text-align: center; display: flex; flex-direction: column;
+            text-align: center; display: flex; flex-direction: column; position: relative;
         }
         
         h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 5px; font-family: var(--font-round); }
@@ -40,6 +40,13 @@
             font-weight: bold; font-size: 1.1rem; font-family: var(--font-round);
         }
 
+        .back-btn {
+            position: absolute; top: 15px; left: 15px; background: #fff1f3;
+            color: var(--accent-color); border: none; width: 35px; height: 35px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; font-size: 1.2rem; z-index: 10;
+        }
+
         .choice-card { 
             background: #fdf2f4; border: 3px solid #fff1f3; border-radius: 20px; 
             cursor: pointer; transition: 0.2s; margin-bottom: 8px; overflow: hidden;
@@ -50,7 +57,8 @@
         .song-img { width: 100%; flex: 1; object-fit: contain; background: #000; min-height: 0; }
         .song-label { font-size: 1rem; font-weight: 700; padding: 8px 5px; color: var(--text-main); background: #fff; }
 
-        .progress-bar { width: 100%; height: 6px; background: #fff1f3; border-radius: 10px; margin-bottom: 5px; }
+        .progress-container { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .progress-bar { flex: 1; height: 6px; background: #fff1f3; border-radius: 10px; }
         #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: 0.3s; }
 
         #round-info { font-size: 0.85rem; margin-bottom: 5px; color: var(--accent-color); font-family: var(--font-round); }
@@ -65,25 +73,27 @@
         .btn-share { background: #F472B6; } 
         .btn-download { background: #6EE7B7; }
         .btn-reset { background: #9CA3AF; }
-        
         .source-link { font-size: 9px; color: #FFB6C1; margin-top: 8px; font-style: italic; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <button id="global-back" class="back-btn" onclick="confirmReset()" style="display: none;">↩</button>
     <h1>Anson Lo Versus</h1>
 
     <div id="menu-view" class="view active">
         <div class="category-grid">
-            <div class="category-btn" onclick="initGame('fast')">⚡ 快歌</div>
-            <div class="category-btn" onclick="initGame('slow')">🌙 慢歌</div>
+            <div class="category-btn" onclick="initGame('fast')">⚡ 跳唱歌</div>
+            <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round);">神徒們，準備好選擇心水了嗎</p>
     </div>
 
     <div id="compare-view" class="view">
-        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <div class="progress-container">
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+        </div>
         <p id="round-info"></p>
         <div class="choice-card" onclick="submitChoice(0)">
             <img id="img-a" class="song-img" src="">
@@ -108,7 +118,6 @@
 </div>
 
 <script>
-    // [數據部分與 25 輪精準算法邏輯保持一致]
     const songImages = {
         "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/1125.jpg?v=1701010621",
         "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A14__1.jpg?v=1695549124",
@@ -145,35 +154,66 @@
     };
 
     const presets = {
-        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life"],
-        slow: ["Burn Out", "角落生物", "神隊友", "EGO", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
+        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life", "EGO"],
+        slow: ["Burn Out", "角落生物", "神隊友", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
     };
 
     let items = [], scores = {}, currentRound = 0;
+    let matchHistory = new Set(); 
     const MAX_ROUNDS = 25; 
     let currentA = "", currentB = "";
 
     function initGame(type) {
         items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {}; items.forEach(item => scores[item] = 1000); 
+        matchHistory.clear();
         currentRound = 0;
+        document.getElementById('global-back').style.display = 'flex';
         showView('compare-view');
         nextMatch();
     }
 
+    function confirmReset() {
+        if (confirm("確定要放棄目前的對決，返回主頁嗎？")) {
+            location.reload();
+        }
+    }
+
     function nextMatch() {
         currentRound++;
-        if (currentRound > MAX_ROUNDS) { showResults(); return; }
-        const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        if (currentRound <= 10) {
-            let idxA = Math.floor(Math.random() * items.length);
-            let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
-            currentA = items[idxA]; currentB = items[idxB];
-        } else {
-            let pivot = Math.random() > 0.3 ? Math.floor(Math.random() * 7) : Math.floor(Math.random() * (items.length - 1));
-            currentA = sorted[pivot]; currentB = sorted[pivot + 1];
+        if (currentRound > MAX_ROUNDS) { 
+            document.getElementById('global-back').style.display = 'none';
+            showResults(); 
+            return; 
         }
-        if (currentA === currentB) { currentRound--; nextMatch(); return; }
+
+        const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
+        let foundNewMatch = false;
+        let attempts = 0;
+
+        while (!foundNewMatch && attempts < 100) {
+            attempts++;
+            let tempA, tempB;
+            if (currentRound <= 10) {
+                let idxA = Math.floor(Math.random() * items.length);
+                let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
+                tempA = items[idxA]; tempB = items[idxB];
+            } else {
+                let pivot = Math.random() > 0.3 ? Math.floor(Math.random() * 7) : Math.floor(Math.random() * (items.length - 1));
+                tempA = sorted[pivot]; tempB = sorted[pivot + 1];
+            }
+
+            const matchKey = [tempA, tempB].sort().join(' VS ');
+            if (tempA !== tempB && !matchHistory.has(matchKey)) {
+                currentA = tempA; currentB = tempB;
+                matchHistory.add(matchKey);
+                foundNewMatch = true;
+            }
+        }
+
+        if (!foundNewMatch) { // 後備機制
+            currentA = items[0]; currentB = items[1];
+        }
         updateUI();
     }
 
@@ -208,7 +248,6 @@
                 <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.85rem;">${song}</div>
             </div>
         `).join('');
-        // 在圖片內顯示目前網址
         document.getElementById('qr-replacement').textContent = `玩緊嘅係：${window.location.origin + window.location.pathname}`;
     }
 
@@ -216,8 +255,6 @@
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
-
-    // --- 分享與下載功能 ---
 
     async function generateBlob() {
         const canvas = await html2canvas(document.getElementById('capture-area'), { 
@@ -229,32 +266,24 @@
     async function shareToSocial() {
         const btn = document.querySelector('.btn-share');
         const originalText = btn.textContent;
-        const currentUrl = window.location.href; // 獲取當前網址
+        const currentUrl = window.location.href;
         btn.textContent = "準備分享中...";
-
         try {
             const blob = await generateBlob();
             const file = new File([blob], 'AnsonLo_Top5.png', { type: 'image/png' });
-
-            // 分享文字包含網址
             const shareData = {
                 title: 'Anson Lo Versus 結果',
                 text: `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n玩緊嘅係：${currentUrl}`,
                 files: [file]
             };
-
             if (navigator.share && navigator.canShare(shareData)) {
                 await navigator.share(shareData);
             } else {
-                alert("你的瀏覽器不支援直接分享圖片，系統將為你下載圖片並複製網址。你可以手動分享到社交平台！");
+                alert("你的瀏覽器不支援直接分享圖片，系統將為你下載圖片並複製網址。");
                 navigator.clipboard.writeText(`這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n${currentUrl}`);
                 downloadImage();
             }
-        } catch (err) {
-            console.error("分享失敗:", err);
-        } finally {
-            btn.textContent = originalText;
-        }
+        } catch (err) { console.error("分享失敗:", err); } finally { btn.textContent = originalText; }
     }
 
     function downloadImage() {
