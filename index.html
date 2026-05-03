@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Anson Lo Versus - 背景美化版</title>
+    <title>Anson Lo Versus - 極簡美學版</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            /* 教主應援粉紅色調 */
             --primary-color: #FFC0CB; 
             --accent-color: #FF99AC;
-            
-            /* 【修正重點】淺色化：將漸變透明度數值提高（變得更白、更淡） */
-            --bg-overlay: linear-gradient(135deg, rgba(255, 245, 247, 0.6) 0%, rgba(255, 192, 203, 0.5) 100%); 
-            
-            --card-bg: rgba(255, 255, 255, 0.92);
+            /* 【修正重點】極致淺色：大幅提升白色遮罩比例 (0.8) */
+            --bg-overlay: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 245, 247, 0.75) 100%); 
+            --card-bg: rgba(255, 255, 255, 0.94);
             --text-main: #4B5563;
             --font-round: 'ZCOOL KuaiLe', cursive;
             --font-main: 'Noto Sans TC', sans-serif;
@@ -27,11 +24,9 @@
         body { 
             display: flex; justify-content: center; align-items: center; 
             padding: env(safe-area-inset-top) 15px env(safe-area-inset-bottom) 15px;
-            
-            /* 背景圖設定：保持平鋪與滾動固定 */
             background: var(--bg-overlay), 
                         url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
-            background-size: 110% auto; 
+            background-size: 115% auto; 
             background-repeat: repeat; 
             background-position: center;
             background-attachment: fixed;
@@ -43,87 +38,90 @@
             max-width: 380px; 
             height: auto; 
             max-height: 82vh; 
-            padding: 20px; 
-            border-radius: 30px; 
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15); 
+            padding: 25px 20px; 
+            border-radius: 35px; 
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
             text-align: center; 
             display: flex; 
             flex-direction: column; 
             position: relative;
-            
-            /* 【修正重點】模糊化：將 Backdrop Blur 數值從 10px 增加到 20px，呈現霧面質感 */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            
-            border: 1.5px solid rgba(255, 255, 255, 0.6);
+            /* 【修正重點】極致模糊：將模糊值翻倍至 40px */
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         
         h1 { 
-            font-size: 1.5rem; 
+            font-size: 1.6rem; 
             color: var(--accent-color); 
-            margin-bottom: 15px; 
+            margin-bottom: 18px; 
             font-family: var(--font-round); 
-            text-shadow: 1px 1px 0px #fff; 
+            letter-spacing: 1px;
         }
 
-        .view { display: none; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .view.active { display: flex; flex-direction: column; animation: fadeIn 0.3s forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* 【修正重點】返回鍵美化：更換圖案與樣式 */
+        .back-btn {
+            position: absolute; top: 22px; left: 20px; 
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent-color); border: none; 
+            width: 36px; height: 36px;
+            border-radius: 12px; cursor: pointer; 
+            display: flex; align-items: center;
+            justify-content: center; font-size: 1.4rem; z-index: 10;
+            box-shadow: 0 4px 10px rgba(255, 192, 203, 0.3);
+            transition: all 0.2s;
+        }
+        .back-btn:active { transform: scale(0.9); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        #menu-view { justify-content: center; gap: 15px; }
-        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+        .view { display: none; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .view.active { display: flex; flex-direction: column; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        #menu-view { justify-content: center; gap: 20px; }
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
         
         .category-btn { 
-            padding: 18px 10px;
-            background: #fff; 
+            padding: 20px 10px;
+            background: linear-gradient(to bottom, #ffffff, #fff9fa);
             border: 2px solid var(--primary-color); 
-            border-radius: 22px; 
+            border-radius: 24px; 
             cursor: pointer; 
             color: var(--accent-color); 
             font-weight: bold; 
             font-size: 1.1rem; 
             font-family: var(--font-round);
-            box-shadow: 0 4px 8px rgba(255,192,203,0.15);
-            transition: transform 0.2s;
+            box-shadow: 0 6px 12px rgba(255,192,203,0.1);
         }
-        .category-btn:active { transform: scale(0.95); }
         
-        .version-tag { position: absolute; bottom: 10px; right: 18px; font-size: 8px; color: #bbb; }
+        .version-tag { position: absolute; bottom: 12px; right: 20px; font-size: 9px; color: #ccc; letter-spacing: 0.5px; }
 
-        .back-btn {
-            position: absolute; top: 18px; left: 18px; background: #fff;
-            color: var(--accent-color); border: none; width: 32px; height: 32px;
-            border-radius: 50%; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; font-size: 1.1rem; z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
+        /* 遊戲核心元件 */
         .choice-card { 
-            background: #fff; border: 2.5px solid #fff; border-radius: 20px; 
-            cursor: pointer; margin-bottom: 12px; overflow: hidden;
-            display: flex; flex-direction: column; 
-            flex: 1.2;
-            min-height: 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+            background: #fff; border: 2px solid #fff; border-radius: 22px; 
+            cursor: pointer; margin-bottom: 15px; overflow: hidden;
+            display: flex; flex-direction: column; flex: 1.2;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
-        .song-img { width: 100%; flex: 1; object-fit: cover; background: #fafafa; min-height: 0; }
-        .song-label { font-size: 0.95rem; font-weight: 700; padding: 10px 5px; color: var(--text-main); }
+        .song-img { width: 100%; flex: 1; object-fit: cover; background: #fdfdfd; }
+        .song-label { font-size: 1rem; font-weight: 700; padding: 12px 5px; color: #555; }
 
-        .progress-bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 15px; }
-        #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: width 0.3s; }
-        #round-info { font-size: 0.85rem; color: var(--accent-color); margin-bottom: 6px; font-family: var(--font-round); }
+        .progress-bar { width: 100%; height: 8px; background: #f0f0f0; border-radius: 10px; margin-bottom: 20px; }
+        #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: width 0.4s ease; }
+        #round-info { font-size: 0.9rem; color: var(--accent-color); margin-bottom: 8px; font-family: var(--font-round); }
 
-        #capture-area { padding: 15px; border-radius: 22px; border: 3px solid var(--primary-color); margin-bottom: 12px; background: white; }
-        .share-header { color: var(--accent-color); font-size: 1.3rem; margin-bottom: 12px; font-family: var(--font-round); }
-        .result-item { display: flex; align-items: center; padding: 6px 15px; background: #fff9fa; margin-bottom: 6px; border-radius: 14px; }
-        .rank-img { width: 40px; height: 40px; border-radius: 8px; margin-right: 12px; object-fit: cover; }
-        .rank-num { font-size: 1.2rem; font-weight: 900; color: var(--accent-color); width: 22px; }
+        /* 結果頁面 */
+        #capture-area { padding: 20px 15px; border-radius: 25px; border: 2px solid var(--primary-color); margin-bottom: 15px; background: white; }
+        .share-header { color: var(--accent-color); font-size: 1.4rem; margin-bottom: 15px; font-family: var(--font-round); }
+        .result-item { display: flex; align-items: center; padding: 8px 15px; background: #fffcfd; margin-bottom: 8px; border-radius: 16px; border: 1px solid #fff0f3; }
+        .rank-img { width: 45px; height: 45px; border-radius: 10px; margin-right: 12px; object-fit: cover; }
+        .rank-num { font-size: 1.3rem; font-weight: 900; color: var(--accent-color); width: 25px; }
 
         .btn-group { gap: 10px; }
-        .btn { padding: 13px; border-radius: 16px; font-size: 0.95rem; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 8px;}
+        .btn { padding: 14px; border-radius: 18px; font-size: 1rem; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; transition: opacity 0.2s; }
+        .btn:active { opacity: 0.8; }
         .btn-share { background: #F472B6; } 
         .btn-download { background: #6EE7B7; }
-        .btn-reset { background: #9CA3AF; }
+        .btn-reset { background: #D1D5DB; color: #4B5563; }
     </style>
 </head>
 <body>
@@ -137,8 +135,8 @@
             <div class="category-btn" onclick="initGame('fast')">⚡ 跳唱歌</div>
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
-        <p style="color: var(--accent-color); font-size: 0.9rem; font-family: var(--font-round);">選擇你的心水神曲</p>
-        <div class="version-tag">v1.4.1-stylized-bg</div>
+        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.8;">選擇類別，選出你的最愛</p>
+        <div class="version-tag">v1.4.5-pro-aesthetic</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -158,19 +156,18 @@
 
     <div id="result-view" class="view">
         <div id="capture-area">
-            <div class="share-header">Top 5 心水結果</div>
+            <div class="share-header">✨ Top 5 心水結果 ✨</div>
             <div id="top5-list"></div>
         </div>
         <div class="btn-group">
-            <button class="btn btn-share" onclick="shareToSocial()">📢 分享結果</button>
-            <button class="btn btn-download" onclick="downloadImage()">💾 儲存圖片</button>
-            <button class="btn btn-reset" onclick="location.reload()">再玩一次</button>
+            <button class="btn btn-share" onclick="shareToSocial()">📢 分享給神徒</button>
+            <button class="btn btn-download" onclick="downloadImage()">💾 儲存結果圖</button>
+            <button class="btn btn-reset" onclick="location.reload()">重新挑戰</button>
         </div>
     </div>
 </div>
 
 <script>
-    // JS 數據與邏輯保持不變，與 v1.4.0 相同
     const songImages = {
         "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/1125.jpg?v=1701010621",
         "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A14__1.jpg?v=1695549124",
@@ -254,7 +251,7 @@
         document.getElementById('option-a').textContent = currentA;
         document.getElementById('option-b').textContent = currentB;
         document.getElementById('progress-fill').style.width = (currentRound / MAX_ROUNDS * 100) + '%';
-        document.getElementById('round-info').textContent = `心水決戰：Round ${currentRound}/${MAX_ROUNDS}`;
+        document.getElementById('round-info').textContent = `Round ${currentRound} / ${MAX_ROUNDS}`;
     }
 
     function showResults() {
@@ -265,7 +262,7 @@
             <div class="result-item">
                 <div class="rank-num">${i + 1}</div>
                 <img class="rank-img" src="${songImages[song]}">
-                <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.9rem;">${song}</div>
+                <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.95rem;">${song}</div>
             </div>
         `).join('');
     }
@@ -294,13 +291,13 @@
 
     function downloadImage() {
         const btn = document.querySelector('.btn-download');
-        btn.textContent = "儲存中...";
+        btn.textContent = "處理中...";
         html2canvas(document.getElementById('capture-area'), { backgroundColor: "#ffffff", useCORS: true, scale: 2 }).then(canvas => {
             const link = document.createElement('a');
             link.download = `AnsonLo_Top5.png`;
             link.href = canvas.toDataURL();
             link.click();
-            btn.textContent = "💾 儲存圖片";
+            btn.textContent = "💾 儲存結果圖";
         });
     }
 </script>
