@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Anson Lo Versus - 精準版</title>
+    <title>Anson Lo Versus - 神徒專屬版</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -12,6 +12,7 @@
             --accent-color: #FF99AC;
             --bg-overlay: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 245, 247, 0.75) 100%); 
             --card-bg: rgba(255, 255, 255, 0.94);
+            --text-main: #4B5563;
             --font-round: 'ZCOOL KuaiLe', cursive;
             --font-main: 'Noto Sans TC', sans-serif;
         }
@@ -24,40 +25,76 @@
             padding: env(safe-area-inset-top) 15px env(safe-area-inset-bottom) 15px;
             background: var(--bg-overlay), 
                         url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
-            background-size: 115% auto; background-repeat: repeat; background-position: center; background-attachment: fixed;
+            background-size: 115% auto; 
+            background-repeat: repeat; 
+            background-position: center;
+            background-attachment: fixed;
         }
         
         .container { 
-            background: var(--card-bg); width: 90%; max-width: 380px; height: auto; max-height: 85vh; 
-            padding: 25px 18px; border-radius: 35px; box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
-            text-align: center; display: flex; flex-direction: column; position: relative;
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.8);
+            background: var(--card-bg); 
+            width: 90%; 
+            max-width: 380px; 
+            height: auto; 
+            max-height: 85vh; 
+            padding: 25px 18px; 
+            border-radius: 35px; 
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         
         h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 18px; font-family: var(--font-round); }
 
         .back-btn {
-            position: absolute; top: 22px; left: 20px; background: rgba(255, 255, 255, 0.9);
-            color: var(--accent-color); border: none; width: 36px; height: 36px;
-            border-radius: 12px; cursor: pointer; display: flex; align-items: center;
+            position: absolute; top: 22px; left: 20px; 
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent-color); border: none; 
+            width: 36px; height: 36px;
+            border-radius: 12px; cursor: pointer; 
+            display: flex; align-items: center;
             justify-content: center; font-size: 1.2rem; z-index: 100;
         }
 
-        .view { display: none; flex: 1; min-height: 0; }
+        .view { display: none; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .view.active { display: flex; flex-direction: column; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         #menu-view { justify-content: center; gap: 20px; }
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
-        .category-btn { padding: 20px 10px; background: #fff; border: 2px solid var(--primary-color); border-radius: 24px; cursor: pointer; color: var(--accent-color); font-weight: bold; font-size: 1.1rem; font-family: var(--font-round); }
         
+        .category-btn { 
+            padding: 20px 10px;
+            background: #fff;
+            border: 2px solid var(--primary-color); 
+            border-radius: 24px; 
+            cursor: pointer; 
+            color: var(--accent-color); 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            font-family: var(--font-round);
+        }
+        
+        .version-tag { position: absolute; bottom: 12px; right: 20px; font-size: 9px; color: #ccc; }
+
         .choice-card { 
-            background: #fff; border: 2px solid #fff; border-radius: 22px; cursor: pointer; margin-bottom: 15px; 
-            overflow: hidden; display: flex; flex-direction: column; flex: 1.2; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: transform 0.1s; -webkit-tap-highlight-color: transparent;
+            background: #fff; border: 2px solid #fff; border-radius: 22px; 
+            cursor: pointer; margin-bottom: 15px; overflow: hidden;
+            display: flex; flex-direction: column; flex: 1.2;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
         }
         .choice-card:active { transform: scale(0.96); }
-        .song-img { width: 100%; flex: 1; object-fit: cover; pointer-events: none; }
-        .song-label { font-size: 1rem; font-weight: 700; padding: 12px 5px; color: #555; background: #fff; pointer-events: none; }
+        
+        /* 確保內容不會阻擋點擊事件 */
+        .song-img { width: 100%; flex: 1; object-fit: cover; background: #fdfdfd; min-height: 0; pointer-events: none; }
+        .song-label { font-size: 1rem; font-weight: 700; padding: 12px 5px; color: #555; background: #fff; pointer-events: none; display: block !important; }
 
         .progress-bar { width: 100%; height: 8px; background: #f0f0f0; border-radius: 10px; margin-bottom: 20px; }
         #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: width 0.4s ease; }
@@ -70,8 +107,13 @@
         .rank-num { font-size: 1.3rem; font-weight: 900; color: var(--accent-color); width: 22px; }
 
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: auto; }
-        .btn { padding: 12px 5px; border-radius: 15px; font-size: 0.85rem; border: none; color: white; cursor: pointer; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
-        .btn-share { background: #F472B6; } .btn-download { background: #6EE7B7; } .btn-reset { background: #E5E7EB; color: #6B7280; }
+        .btn { 
+            padding: 12px 5px; border-radius: 15px; font-size: 0.85rem; border: none; color: white; cursor: pointer; font-weight: bold; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+        }
+        .btn-share { background: #F472B6; } 
+        .btn-download { background: #6EE7B7; }
+        .btn-reset { background: #E5E7EB; color: #6B7280; }
     </style>
 </head>
 <body>
@@ -85,7 +127,8 @@
             <div class="category-btn" onclick="initGame('fast')">⚡ 跳唱歌</div>
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
-        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">精準算法：選出你的心水 Top 3</p>
+        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">神徒們，準備好選出心水未？</p>
+        <div class="version-tag">v1.6.3-fix-label</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -157,13 +200,12 @@
         slow: ["Burn Out", "角落生物", "神隊友", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
     };
 
-    let items = [], scores = {}, currentRound = 0;
-    let matchHistory = new Set(); // 用於紀錄對決組合防止重複
+    let items = [], scores = {}, currentRound = 0, matchHistory = new Set();
     const MAX_ROUNDS = 25; 
     let currentA = "", currentB = "";
 
     function initGame(type) {
-        items = [...presets[type]];
+        items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {}; items.forEach(item => scores[item] = 1000); 
         matchHistory.clear();
         currentRound = 0;
@@ -187,35 +229,28 @@
         let found = false;
         let attempts = 0;
 
-        while (!found && attempts < 50) {
+        while (!found && attempts < 100) {
             attempts++;
-            let idxA, idxB;
+            let tA, tB;
 
             if (currentRound <= 12) {
-                // 前期：隨機配對
-                idxA = Math.floor(Math.random() * items.length);
-                idxB = (idxA + Math.floor(Math.random() * (items.length - 1)) + 1) % items.length;
+                let idxA = Math.floor(Math.random() * items.length);
+                let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
+                tA = items[idxA]; tB = items[idxB];
             } else {
-                // 後期：強強對決 (分數相近的優先)
                 let pivot = Math.floor(Math.random() * (items.length - 1));
-                idxA = items.indexOf(sorted[pivot]);
-                idxB = items.indexOf(sorted[pivot + 1]);
+                tA = sorted[pivot]; tB = sorted[pivot + 1];
             }
 
-            let tA = items[idxA], tB = items[idxB];
-            let pairKey = [tA, tB].sort().join('v');
-
-            if (tA !== tB && !matchHistory.has(pairKey)) {
+            const key = [tA, tB].sort().join('|');
+            if (tA !== tB && !matchHistory.has(key)) {
                 currentA = tA; currentB = tB;
-                matchHistory.add(pairKey);
+                matchHistory.add(key);
                 found = true;
             }
         }
-
-        // 萬一隨機不出來，保底強制選取一組
-        if (!found) {
-            currentA = sorted[0]; currentB = sorted[1];
-        }
+        
+        if (!found) { currentA = sorted[0]; currentB = sorted[1]; }
         updateUI();
     }
 
@@ -223,10 +258,8 @@
         const winner = idx === 0 ? currentA : currentB;
         const loser = idx === 0 ? currentB : currentA;
         
-        // Elo 期望值算法
         const Ea = 1 / (1 + Math.pow(10, (scores[loser] - scores[winner]) / 400));
-        const K = 60; // 影響係數
-        
+        const K = 60;
         scores[winner] += Math.round(K * (1 - Ea));
         scores[loser] -= Math.round(K * (1 - Ea));
         
@@ -234,10 +267,17 @@
     }
 
     function updateUI() {
-        document.getElementById('img-a').src = songImages[currentA];
-        document.getElementById('img-b').src = songImages[currentB];
-        document.getElementById('option-a').textContent = currentA;
-        document.getElementById('option-b').textContent = currentB;
+        // 修正 2: 強制確保 DOM 更新並顯示歌名
+        const labelA = document.getElementById('option-a');
+        const labelB = document.getElementById('option-b');
+        const imgA = document.getElementById('img-a');
+        const imgB = document.getElementById('img-b');
+
+        labelA.textContent = currentA;
+        labelB.textContent = currentB;
+        imgA.src = songImages[currentA];
+        imgB.src = songImages[currentB];
+
         document.getElementById('progress-fill').style.width = (currentRound / MAX_ROUNDS * 100) + '%';
         document.getElementById('round-info').textContent = `Round ${currentRound} / ${MAX_ROUNDS}`;
     }
@@ -245,7 +285,8 @@
     function showResults() {
         showView('result-view');
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        document.getElementById('top5-list').innerHTML = sorted.slice(0, 5).map((song, i) => `
+        const top5 = sorted.slice(0, 5);
+        document.getElementById('top5-list').innerHTML = top5.map((song, i) => `
             <div class="result-item">
                 <div class="rank-num">${i + 1}</div>
                 <img class="rank-img" src="${songImages[song]}">
@@ -264,10 +305,18 @@
         const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", useCORS: true, scale: 2 });
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
         const file = new File([blob], 'AL_Top5.png', { type: 'image/png' });
+        
         if (navigator.share) {
-            try { await navigator.share({ files: [file], title: 'Anson Lo Top 5', text: '這是我選出的心水 Top 5！' }); } catch(e) {}
+            try { 
+                await navigator.share({ 
+                    files: [file], 
+                    title: 'Anson Lo Versus', 
+                    text: '這是我選出的心水 Top 5！你也來挑戰看看吧！' 
+                }); 
+            } catch(e) {}
         } else {
-            alert("請儲存圖片後分享！"); downloadImage();
+            alert("請儲存圖片後手動分享！");
+            downloadImage();
         }
     }
 
