@@ -143,13 +143,13 @@
     };
 
     let items = [], scores = {}, currentRound = 0;
-    const MAX_ROUNDS = 20; // 鎖定 20 回合
+    const MAX_ROUNDS = 25; 
     let currentA = "", currentB = "";
 
     function initGame(type) {
         items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {};
-        items.forEach(item => scores[item] = 1000); // 初始 ELO
+        items.forEach(item => scores[item] = 1000); 
         currentRound = 0;
         showView('compare-view');
         nextMatch();
@@ -162,18 +162,35 @@
             return;
         }
 
-        // 挑選邏輯
-        if (currentRound <= Math.floor(items.length / 2)) {
-            // 前期：確保每首歌都至少出來露面一次 (1vs2, 3vs4...)
-            currentA = items[(currentRound - 1) * 2];
-            currentB = items[(currentRound - 1) * 2 + 1];
+        const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
+
+        if (currentRound <= 10) {
+            // 前 10 回合：廣泛測量，讓不同實力層交手
+            // 隨機選一個，再選一個排名跟它有一定距離的人
+            let idxA = Math.floor(Math.random() * items.length);
+            let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
+            currentA = items[idxA];
+            currentB = items[idxB];
         } else {
-            // 後期：挑選積分最接近的兩首歌進行「精準分位」
-            const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-            // 隨機挑選一個排名，並找他身邊的人比賽
-            const pivot = Math.floor(Math.random() * (items.length - 1));
+            // 第 11-25 回合：精準卡位（對決積分最接近的人）
+            // 重點關注前 8 名的排位爭奪
+            let pivot;
+            if (Math.random() > 0.3) {
+                // 70% 機率在排名前 8 中進行強強對決，穩定 Top 5
+                pivot = Math.floor(Math.random() * 7);
+            } else {
+                // 30% 機率在全體中找相近對手
+                pivot = Math.floor(Math.random() * (items.length - 1));
+            }
             currentA = sorted[pivot];
             currentB = sorted[pivot + 1];
+        }
+
+        // 避免重複
+        if (currentA === currentB) {
+            currentRound--;
+            nextMatch();
+            return;
         }
 
         updateUI();
@@ -183,10 +200,16 @@
         const winner = idx === 0 ? currentA : currentB;
         const loser = idx === 0 ? currentB : currentA;
 
-        // ELO 簡易加權：後期比賽得分更高
-        const weight = currentRound > 10 ? 40 : 25;
-        scores[winner] += weight;
-        scores[loser] -= Math.floor(weight / 2);
+        // ELO 算法基礎：計算期望值
+        const winProb = 1 / (1 + Math.pow(10, (scores[loser] - scores[winner]) / 400));
+        
+        // K-Factor：後期對決更關鍵，加分更多
+        const K = currentRound > 15 ? 60 : 40;
+        
+        const scoreChange = Math.round(K * (1 - winProb));
+        
+        scores[winner] += scoreChange;
+        scores[loser] -= Math.floor(scoreChange * 0.8); // 稍微減少扣分，保持整體分數穩定
 
         nextMatch();
     }
@@ -202,6 +225,7 @@
 
     function showResults() {
         showView('result-view');
+        // 最後按積分排序
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
         const top5 = sorted.slice(0, 5);
         document.getElementById('top5-list').innerHTML = top5.map((song, i) => `
@@ -225,7 +249,7 @@
             backgroundColor: "#ffffff", useCORS: true, scale: 2 
         }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `AnsonLo_Top5.png`;
+            link.download = `AnsonLo_Top5_Chosen.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             btn.textContent = "📸 儲存結果分享";
