@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Anson Lo Versus - 神徒專屬版v1.6.7</title>
+    <title>Anson Lo Versus - 神徒專屬版v1.6.8</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -33,13 +33,13 @@
         
         .container { 
             background: var(--card-bg); 
-            width: 90%; 
+            width: 95%; 
             max-width: 380px; 
+            /* 【修正重點】設定最小高度，確保首頁框框垂直空間充足 */
+            min-height: 320px; 
             height: auto; 
-            /* 【修正重點】內容框 size 保持不變，維持對決區高度在視窗內 */
-            max-height: 90vh; 
-            /* 【修正重點】縮減容器內邊距以騰出空間給圖片 */
-            padding: 15px 18px; 
+            max-height: 92vh; 
+            padding: 20px 18px; 
             border-radius: 35px; 
             box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
             text-align: center; 
@@ -51,8 +51,7 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
         
-        /* 【修正重點】縮減標題下邊距 */
-        h1 { font-size: 1.5rem; color: var(--accent-color); margin-bottom: 8px; font-family: var(--font-round); }
+        h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 12px; font-family: var(--font-round); }
 
         .back-btn {
             position: absolute; top: 18px; left: 18px; 
@@ -66,13 +65,16 @@
 
         .view { display: none; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .view.active { display: flex; flex-direction: column; animation: fadeIn 0.4s ease-out; }
+        
+        /* 【修正重點】增加首頁內邊距，撐開垂直高度 20% */
+        #menu-view.active { justify-content: center; gap: 20px; padding: 30px 0; }
+
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        #menu-view { justify-content: center; gap: 15px; }
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
         
         .category-btn { 
-            padding: 20px 10px;
+            padding: 22px 10px;
             background: #fff;
             border: 2px solid var(--primary-color); 
             border-radius: 24px; 
@@ -81,16 +83,17 @@
             font-weight: bold; 
             font-size: 1.1rem; 
             font-family: var(--font-round);
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 10px rgba(255, 192, 203, 0.2);
         }
+        .category-btn:active { transform: scale(0.96); box-shadow: none; }
         
-        .version-tag { position: absolute; bottom: 12px; right: 20px; font-size: 9px; color: #ccc; }
+        .version-tag { position: absolute; bottom: 12px; right: 20px; font-size: 9px; color: #ddd; }
 
+        /* 對決卡片與圖片設置 (承襲 v1.6.7) */
         .choice-card { 
             background: #fff; border: 2px solid #fff; border-radius: 20px; 
-            cursor: pointer; 
-            /* 【修正重點】縮減卡片間距 */
-            margin-bottom: 8px; 
-            overflow: hidden;
+            cursor: pointer; margin-bottom: 8px; overflow: hidden;
             display: flex; flex-direction: column; 
             box-shadow: 0 6px 15px rgba(0,0,0,0.05);
             transition: transform 0.1s;
@@ -99,33 +102,20 @@
         }
         .choice-card:active { transform: scale(0.96); }
         
-        /* 【修正重點】高度調長一点（從 22vh 增加到 32vh），以完整顯示人面 */
         .song-img { 
-            width: 100%; /* 闊度維持不變 */
-            height: 32vh; 
-            max-height: 300px; /* 限制最大高度避免在寬螢幕拉太長 */
-            object-fit: cover; /* 確保人面不變形，只裁剪邊緣 */
-            background: #fdfdfd; 
-            pointer-events: none; 
+            width: 100%; height: 32vh; max-height: 300px; 
+            object-fit: cover; background: #fdfdfd; pointer-events: none; 
         }
         
         .song-label { 
-            font-size: 0.85rem; 
-            font-weight: 700; 
-            /* 【修正重點】微調文字內邊距確保整體緊湊 */
-            padding: 8px 5px; 
-            color: #555; 
-            background: #fff; 
-            pointer-events: none; 
-            display: block !important; 
+            font-size: 0.85rem; font-weight: 700; padding: 8px 5px; 
+            color: #555; background: #fff; pointer-events: none; 
         }
 
-        /* 【修正重點】縮減進度區邊距 */
         .progress-bar { width: 100%; height: 6px; background: #f0f0f0; border-radius: 10px; margin-bottom: 8px; }
         #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: width 0.4s ease; }
         #round-info { font-size: 0.85rem; color: var(--accent-color); margin-bottom: 4px; font-family: var(--font-round); }
 
-        /* 結果頁樣式微調確保不影響 */
         #capture-area { padding: 15px 10px; border-radius: 25px; border: 2px solid var(--primary-color); margin-bottom: 15px; background: white; }
         .share-header { color: var(--accent-color); font-size: 1.3rem; margin-bottom: 12px; font-family: var(--font-round); }
         .result-item { display: flex; align-items: center; padding: 6px 10px; background: #fffcfd; margin-bottom: 6px; border-radius: 14px; border: 1px solid #fff0f3; }
@@ -133,13 +123,8 @@
         .rank-num { font-size: 1.2rem; font-weight: 900; color: var(--accent-color); width: 20px; }
 
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: auto; }
-        .btn { 
-            padding: 10px 5px; border-radius: 15px; font-size: 0.8rem; border: none; color: white; cursor: pointer; font-weight: bold; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-        }
-        .btn-share { background: #F472B6; } 
-        .btn-download { background: #6EE7B7; }
-        .btn-reset { background: #E5E7EB; color: #6B7280; }
+        .btn { padding: 10px 5px; border-radius: 15px; font-size: 0.8rem; border: none; color: white; cursor: pointer; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;}
+        .btn-share { background: #F472B6; } .btn-download { background: #6EE7B7; } .btn-reset { background: #E5E7EB; color: #6B7280; }
     </style>
 </head>
 <body>
@@ -153,8 +138,8 @@
             <div class="category-btn" onclick="initGame('fast')">⚡ 跳唱歌</div>
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
-        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">神徒們，準備好選出心水未？</p>
-        <div class="version-tag">v1.6.7-human-face-fix</div>
+        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9; margin-top: 15px;">神徒們，準備好選出心水未？</p>
+        <div class="version-tag">v1.6.8-layout-fix</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -186,7 +171,7 @@
 </div>
 
 <script>
-    // JS 數據與邏輯保持不變，與 v1.6.6 相同
+    // JS 數據與邏輯部分（與 v1.6.7 相同，略過不贅述以節省長度，請沿用之前的完整腳本）
     const songImages = {
         "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/1125.jpg?v=1701010621",
         "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A14__1.jpg?v=1695549124",
@@ -251,11 +236,8 @@
             document.getElementById('global-back').style.display = 'none';
             showResults(); return; 
         }
-
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        let found = false;
-        let attempts = 0;
-
+        let found = false, attempts = 0;
         while (!found && attempts < 100) {
             attempts++;
             let tA, tB;
@@ -319,41 +301,20 @@
         const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", useCORS: true, scale: 2 });
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
         const file = new File([blob], 'AL_Top5.png', { type: 'image/png' });
-        
         const shareUrl = window.location.href;
         const shareText = `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n傳送門：${shareUrl}`;
-
         if (navigator.share) {
-            try { 
-                await navigator.share({ 
-                    files: [file], 
-                    title: 'Anson Lo Versus', 
-                    text: shareText
-                }); 
-            } catch(e) {
-                try {
-                    await navigator.share({
-                        title: 'Anson Lo Versus',
-                        text: shareText,
-                        url: shareUrl
-                    });
-                } catch(err) {
-                    alert("無法直接分享連結，請儲存圖片後手動複製連結：\n" + shareUrl);
-                    downloadImage();
+            try { await navigator.share({ files: [file], title: 'Anson Lo Versus', text: shareText }); } catch(e) {
+                try { await navigator.share({ title: 'Anson Lo Versus', text: shareText, url: shareUrl }); } catch(err) {
+                    alert("無法分享，連結：\n" + shareUrl); downloadImage();
                 }
             }
-        } else {
-            alert("瀏覽器不支援分享，請儲存圖片後手動複製連結：\n" + shareUrl);
-            downloadImage();
-        }
+        } else { alert("瀏覽器不支援分享，連結：\n" + shareUrl); downloadImage(); }
     }
 
     function downloadImage() {
         html2canvas(document.getElementById('capture-area'), { useCORS: true, scale: 2 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `AnsonLo_Top5.png`;
-            link.href = canvas.toDataURL();
-            link.click();
+            const link = document.createElement('a'); link.download = `AnsonLo_Top5.png`; link.href = canvas.toDataURL(); link.click();
         });
     }
 </script>
