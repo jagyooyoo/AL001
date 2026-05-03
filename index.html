@@ -11,8 +11,12 @@
             /* 教主應援粉紅色調 */
             --primary-color: #FFC0CB; 
             --accent-color: #FF99AC;
-            --bg-overlay: rgba(255, 245, 247, 0.85); 
-            --card-bg: rgba(255, 255, 255, 0.95);
+            
+            /* 【修正重點】降低遮罩不透明度 (0.4)，並使用漸變色讓背景圖清晰透出 */
+            --bg-overlay: linear-gradient(135deg, rgba(255, 245, 247, 0.4) 0%, rgba(255, 192, 203, 0.3) 100%); 
+            
+            /* 容器背景微透，強化毛玻璃效果 */
+            --card-bg: rgba(255, 255, 255, 0.88);
             --text-main: #4B5563;
             --font-round: 'ZCOOL KuaiLe', cursive;
             --font-main: 'Noto Sans TC', sans-serif;
@@ -25,9 +29,9 @@
             display: flex; justify-content: center; align-items: center; 
             padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
             
-            /* 已更新：使用你提供的 GitHub 原始背景圖連結 */
-            background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
-                              url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
+            /* 【修正重點】背景圖設定：確保圖片在遮罩下方且不被完全遮擋 */
+            background: var(--bg-overlay), 
+                        url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -38,10 +42,13 @@
             background: var(--card-bg); width: 100%; max-width: 400px; 
             height: 92vh; max-height: 800px;
             padding: 20px 15px; border-radius: 35px; 
-            box-shadow: 0 10px 30px rgba(255,192,203,0.3); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             text-align: center; display: flex; flex-direction: column; position: relative;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            
+            /* 強化毛玻璃質感 */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
         
         h1 { font-size: 1.5rem; color: var(--accent-color); margin-bottom: 10px; font-family: var(--font-round); text-shadow: 1px 1px 0px #fff; }
@@ -60,7 +67,7 @@
             box-shadow: 0 4px 6px rgba(255,192,203,0.2);
         }
         .category-btn:active { transform: scale(0.95); }
-        .version-tag { position: absolute; bottom: 5px; right: 10px; font-size: 8px; color: #ccc; pointer-events: none; }
+        .version-tag { position: absolute; bottom: 5px; right: 10px; font-size: 8px; color: #aaa; pointer-events: none; }
 
         .back-btn {
             position: absolute; top: 18px; left: 15px; background: #fff1f3;
@@ -112,7 +119,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.9rem; font-family: var(--font-round);">神徒們，準備好選擇心水了嗎</p>
-        <div class="version-tag">v1.2.3-github</div>
+        <div class="version-tag">v1.2.4-stable</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -145,6 +152,7 @@
 </div>
 
 <script>
+    // 歌曲圖片與預設數據庫
     const songImages = {
         "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/1125.jpg?v=1701010621",
         "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A14__1.jpg?v=1695549124",
