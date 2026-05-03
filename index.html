@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Anson Lo Versus - 優化版</title>
+    <title>Anson Lo Versus - 優化版v2</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -25,18 +25,21 @@
             padding: env(safe-area-inset-top) 15px env(safe-area-inset-bottom) 15px;
             background: var(--bg-overlay), 
                         url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
-            background-size: cover;
+            /* 修正1：縮小背景圖，令圖中的字顯得沒那麼大 */
+            background-size: 50%; /* 將圖片縮小至 50% */
+            background-repeat: repeat; /* 讓縮小後的圖案重復鋪滿 */
             background-position: center;
             background-attachment: fixed;
         }
         
-        /* 調整後的內容框：寬度增加 20%，高度也適度放寬 */
+        /* 調整後的內容框：闊度保持，高度較大一點 */
         .container { 
             background: var(--card-bg); 
             width: 90%; 
-            max-width: 380px; /* 從 320px 調大至 380px */
+            max-width: 380px; /* 闊度保持適中 */
             height: auto; 
-            max-height: 75vh; /* 從 65vh 調大至 75vh */
+            /* 修正2：內容框高度可較大一點 */
+            max-height: 82vh; /* 從 75vh 提高至 82vh */
             padding: 18px; 
             border-radius: 30px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.12); 
@@ -86,11 +89,13 @@
             justify-content: center; font-size: 1rem; z-index: 10;
         }
 
-        /* 對決卡片 */
+        /* 對決卡片：稍微增加高度彈性 */
         .choice-card { 
             background: #fff; border: 2px solid #fff; border-radius: 20px; 
             cursor: pointer; margin-bottom: 10px; overflow: hidden;
-            display: flex; flex-direction: column; flex: 1; min-height: 0;
+            display: flex; flex-direction: column; 
+            flex: 1.2; /* 稍微增加點點權重 */
+            min-height: 0;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
         .song-img { width: 100%; flex: 1; object-fit: cover; background: #fafafa; min-height: 0; }
@@ -126,7 +131,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.85rem; font-family: var(--font-round);">選擇你的心水神曲</p>
-        <div class="version-tag">v1.3.5-plus</div>
+        <div class="version-tag">v1.3.6-stable</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -198,14 +203,14 @@
         slow: ["Burn Out", "角落生物", "神隊友", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
     };
 
-    let items = [], scores = {}, currentRound = 0;
-    const MAX_ROUNDS = 20; 
+    let items = [], scores = {}, currentRound = 0, matchHistory = new Set();
+    const MAX_ROUNDS = 25; 
     let currentA = "", currentB = "";
 
     function initGame(type) {
         items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {}; items.forEach(item => scores[item] = 1000); 
-        currentRound = 0;
+        matchHistory.clear(); currentRound = 0;
         document.getElementById('global-back').style.display = 'flex';
         showView('compare-view');
         nextMatch();
@@ -221,25 +226,50 @@
             document.getElementById('global-back').style.display = 'none';
             showResults(); return; 
         }
+
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        let pivot = Math.floor(Math.random() * (items.length - 1));
-        currentA = sorted[pivot]; currentB = sorted[pivot + 1];
+        let found = false;
+        let attempts = 0;
+
+        while (!found && attempts < 100) {
+            attempts++;
+            let tA, tB;
+            if (currentRound <= 10) {
+                let idxA = Math.floor(Math.random() * items.length);
+                let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
+                tA = items[idxA]; tB = items[idxB];
+            } else {
+                let pivot = Math.random() > 0.3 ? Math.floor(Math.random() * 7) : Math.floor(Math.random() * (items.length - 1));
+                tA = sorted[pivot]; tB = sorted[pivot + 1];
+            }
+            const key = [tA, tB].sort().join('|');
+            if (tA !== tB && !matchHistory.has(key)) {
+                currentA = tA; currentB = tB;
+                matchHistory.add(key); found = true;
+            }
+        }
+        if (!found) { currentA = items[0]; currentB = items[1]; }
         updateUI();
     }
 
     function handleChoice(idx) {
         const winner = idx === 0 ? currentA : currentB;
         const loser = idx === 0 ? currentB : currentA;
-        scores[winner] += 50;
-        scores[loser] -= 30;
+        const winProb = 1 / (1 + Math.pow(10, (scores[loser] - scores[winner]) / 400));
+        const K = currentRound > 15 ? 70 : 45; // 後期權重稍微加大
+        const scoreChange = Math.round(K * (1 - winProb));
+        scores[winner] += scoreChange;
+        scores[loser] -= Math.floor(scoreChange * 0.85);
         nextMatch();
     }
 
     function updateUI() {
-        document.getElementById('img-a').src = songImages[currentA];
-        document.getElementById('img-b').src = songImages[currentB];
+        const imgA = document.getElementById('img-a');
+        const imgB = document.getElementById('img-b');
         document.getElementById('option-a').textContent = currentA;
         document.getElementById('option-b').textContent = currentB;
+        imgA.src = songImages[currentA];
+        imgB.src = songImages[currentB];
         document.getElementById('progress-fill').style.width = (currentRound / MAX_ROUNDS * 100) + '%';
         document.getElementById('round-info').textContent = `心水決戰：Round ${currentRound}/${MAX_ROUNDS}`;
     }
@@ -263,19 +293,32 @@
     }
 
     async function shareToSocial() {
-        const canvas = await html2canvas(document.getElementById('capture-area'), { scale: 2 });
-        const blob = await new Promise(res => canvas.toBlob(res));
-        const file = new File([blob], 'Top5.png', { type: 'image/png' });
-        if (navigator.share) await navigator.share({ files: [file] });
-        else alert("請截圖或儲存圖片分享！");
+        const canvas = await html2canvas(document.getElementById('capture-area'), { backgroundColor: "#ffffff", useCORS: true, scale: 2 });
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        const file = new File([blob], 'AL_Top5.png', { type: 'image/png' });
+        const shareData = {
+            title: 'Anson Lo Versus',
+            text: `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n${window.location.href}`,
+            files: [file]
+        };
+        if (navigator.share && navigator.canShare(shareData)) {
+            await navigator.share(shareData);
+        } else {
+            alert("已複製連結，請自行儲存圖片分享！");
+            navigator.clipboard.writeText(`我的 Anson Lo 心水 Top 5：\n${window.location.href}`);
+            downloadImage();
+        }
     }
 
     function downloadImage() {
-        html2canvas(document.getElementById('capture-area'), { scale: 2 }).then(canvas => {
+        const btn = document.querySelector('.btn-download');
+        btn.textContent = "儲存中...";
+        html2canvas(document.getElementById('capture-area'), { backgroundColor: "#ffffff", useCORS: true, scale: 2 }).then(canvas => {
             const link = document.createElement('a');
             link.download = `AnsonLo_Top5.png`;
             link.href = canvas.toDataURL();
             link.click();
+            btn.textContent = "💾 儲存圖片";
         });
     }
 </script>
