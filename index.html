@@ -62,9 +62,11 @@
         .rank-num { font-size: 1.1rem; font-weight: 900; color: var(--accent-color); width: 18px; font-family: var(--font-round); }
 
         .btn { width: 100%; padding: 12px; border: none; border-radius: 15px; font-size: 0.95rem; cursor: pointer; font-weight: bold; margin-top: 8px; color: white; }
+        .btn-share { background: #F472B6; } 
         .btn-download { background: #6EE7B7; }
-        .btn-share { background: #F472B6; } /* 分享按鈕粉色 */
         .btn-reset { background: #9CA3AF; }
+        
+        .source-link { font-size: 9px; color: #FFB6C1; margin-top: 8px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -97,16 +99,16 @@
         <div id="capture-area">
             <div class="share-header">神徒之選 Top 5</div>
             <div id="top5-list"></div>
-            <p style="font-size: 10px; color: #ccc; margin-top: 5px;">Created by Anson Lo Versus</p>
+            <p id="qr-replacement" class="source-link"></p>
         </div>
-        <button class="btn btn-share" onclick="shareToSocial()">📢 一鍵分享結果</button>
+        <button class="btn btn-share" onclick="shareToSocial()">📢 分享結果吸引神徒</button>
         <button class="btn btn-download" onclick="downloadImage()">💾 儲存圖片</button>
         <button class="btn btn-reset" onclick="location.reload()">再玩一次</button>
     </div>
 </div>
 
 <script>
-    // [歌曲圖片數據與預設組保持不變...]
+    // [數據部分與 25 輪精準算法邏輯保持一致]
     const songImages = {
         "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/1125.jpg?v=1701010621",
         "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A14__1.jpg?v=1695549124",
@@ -151,7 +153,6 @@
     const MAX_ROUNDS = 25; 
     let currentA = "", currentB = "";
 
-    // [核心邏輯 initGame, nextMatch, submitChoice, updateUI 保持 25 輪精準版不變...]
     function initGame(type) {
         items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {}; items.forEach(item => scores[item] = 1000); 
@@ -207,6 +208,8 @@
                 <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.85rem;">${song}</div>
             </div>
         `).join('');
+        // 在圖片內顯示目前網址
+        document.getElementById('qr-replacement').textContent = `玩緊嘅係：${window.location.origin + window.location.pathname}`;
     }
 
     function showView(id) {
@@ -226,22 +229,25 @@
     async function shareToSocial() {
         const btn = document.querySelector('.btn-share');
         const originalText = btn.textContent;
+        const currentUrl = window.location.href; // 獲取當前網址
         btn.textContent = "準備分享中...";
 
         try {
             const blob = await generateBlob();
             const file = new File([blob], 'AnsonLo_Top5.png', { type: 'image/png' });
 
-            if (navigator.share && navigator.canShare({ files: [file] })) {
-                // 手機原生分享（支援圖片）
-                await navigator.share({
-                    files: [file],
-                    title: 'Anson Lo Versus 結果',
-                    text: '這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！'
-                });
+            // 分享文字包含網址
+            const shareData = {
+                title: 'Anson Lo Versus 結果',
+                text: `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n玩緊嘅係：${currentUrl}`,
+                files: [file]
+            };
+
+            if (navigator.share && navigator.canShare(shareData)) {
+                await navigator.share(shareData);
             } else {
-                // 不支援原生分享時（如 PC 瀏覽器），回退到圖片儲存
-                alert("你的瀏覽器不支援直接分享圖片，系統將為你儲存圖片，你可以手動上傳到社交平台。");
+                alert("你的瀏覽器不支援直接分享圖片，系統將為你下載圖片並複製網址。你可以手動分享到社交平台！");
+                navigator.clipboard.writeText(`這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n${currentUrl}`);
                 downloadImage();
             }
         } catch (err) {
