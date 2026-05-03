@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Anson Lo Versus - 神徒專屬版</title>
+    <title>Anson Lo Versus - 神徒專屬版v1.6.5</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -36,7 +36,7 @@
             width: 90%; 
             max-width: 380px; 
             height: auto; 
-            max-height: 85vh; 
+            max-height: 85vh; /* 內容框大小保持不變 */
             padding: 25px 18px; 
             border-radius: 35px; 
             box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
@@ -78,38 +78,66 @@
             font-weight: bold; 
             font-size: 1.1rem; 
             font-family: var(--font-round);
+            transition: transform 0.1s;
         }
+        .category-btn:active { transform: scale(0.95); }
         
         .version-tag { position: absolute; bottom: 12px; right: 20px; font-size: 9px; color: #ccc; }
 
+        /* 對決卡片修正 */
         .choice-card { 
             background: #fff; border: 2px solid #fff; border-radius: 22px; 
-            cursor: pointer; margin-bottom: 15px; overflow: hidden;
-            display: flex; flex-direction: column; flex: 1.2;
+            cursor: pointer; margin-bottom: 12px; overflow: hidden;
+            display: flex; flex-direction: column; 
+            flex: 0 0 auto; /* 不自動伸縮，靠 aspect-ratio 決定高度 */
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
             transition: transform 0.1s;
             -webkit-tap-highlight-color: transparent;
+            /* 【修正重點】確保卡片容器本身趨向正方形 */
+            width: 100%;
+            max-width: 280px; /* 限制最大闊度，避免在寬螢幕上圖片太大 */
+            margin-left: auto; margin-right: auto;
         }
         .choice-card:active { transform: scale(0.96); }
         
-        .song-img { width: 100%; flex: 1; object-fit: cover; background: #fdfdfd; min-height: 0; pointer-events: none; }
-        .song-label { font-size: 1rem; font-weight: 700; padding: 12px 5px; color: #555; background: #fff; pointer-events: none; display: block !important; }
+        /* 【修正重點】歌曲圖片正方形化 (1:1) */
+        .song-img { 
+            width: 100%; 
+            aspect-ratio: 1 / 1; /* 強制 1:1 比例 */
+            object-fit: cover; /* 確保圖片裁剪置中不變形 */
+            background: #fdfdfd; 
+            pointer-events: none; 
+        }
+        
+        /* 【修正重點】對決頁歌曲名稱調小 */
+        .song-label { 
+            font-size: 0.9rem; /* 從 1rem 調小至 0.9rem */
+            font-weight: 700; 
+            padding: 8px 5px; /* 縮減內邊距 */
+            color: #555; 
+            background: #fff; 
+            pointer-events: none; 
+            display: block !important; 
+        }
 
-        .progress-bar { width: 100%; height: 8px; background: #f0f0f0; border-radius: 10px; margin-bottom: 20px; }
+        .progress-bar { width: 100%; height: 8px; background: #f0f0f0; border-radius: 10px; margin-bottom: 15px; }
         #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: width 0.4s ease; }
         #round-info { font-size: 0.9rem; color: var(--accent-color); margin-bottom: 8px; font-family: var(--font-round); }
 
         #capture-area { padding: 18px 12px; border-radius: 25px; border: 2px solid var(--primary-color); margin-bottom: 20px; background: white; }
         .share-header { color: var(--accent-color); font-size: 1.4rem; margin-bottom: 15px; font-family: var(--font-round); }
+        
+        /* Top 5 結果列表保持原本的縮圖比例 */
         .result-item { display: flex; align-items: center; padding: 8px 12px; background: #fffcfd; margin-bottom: 8px; border-radius: 16px; border: 1px solid #fff0f3; }
         .rank-img { width: 42px; height: 42px; border-radius: 10px; margin-right: 12px; object-fit: cover; }
-        .rank-num { font-size: 1.3rem; font-weight: 900; color: var(--accent-color); width: 22px; }
+        .rank-num { font-size: 1.3rem; font-weight: 900; color: var(--accent-color); width: 22px; text-align: center; }
 
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: auto; }
         .btn { 
             padding: 12px 5px; border-radius: 15px; font-size: 0.85rem; border: none; color: white; cursor: pointer; font-weight: bold; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
         }
+        .btn-icon { font-size: 1.2rem; }
         .btn-share { background: #F472B6; } 
         .btn-download { background: #6EE7B7; }
         .btn-reset { background: #E5E7EB; color: #6B7280; }
@@ -127,7 +155,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">神徒們，準備好選出心水未？</p>
-        <div class="version-tag">v1.6.4-share-fix</div>
+        <div class="version-tag">v1.6.5-square-img</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -151,14 +179,15 @@
             <div id="top5-list"></div>
         </div>
         <div class="btn-group">
-            <button class="btn btn-share" onclick="shareToSocial()">📢分享</button>
-            <button id="dl-btn" class="btn btn-download" onclick="downloadImage()">💾儲存</button>
-            <button class="btn btn-reset" onclick="location.reload()">🔄再玩</button>
+            <button class="btn btn-share" onclick="shareToSocial()"><span class="btn-icon">📢</span>分享</button>
+            <button id="dl-btn" class="btn btn-download" onclick="downloadImage()"><span class="btn-icon">💾</span>儲存</button>
+            <button class="btn btn-reset" onclick="location.reload()"><span class="btn-icon">🔄</span>再玩</button>
         </div>
     </div>
 </div>
 
 <script>
+    // JS 數據與邏輯部分保持不變
     const songImages = {
         "特別約會儀式": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/1125.jpg?v=1701010621",
         "偷情": "https://cdn.shopify.com/s/files/1/0571/6987/0938/files/A14__1.jpg?v=1695549124",
@@ -261,10 +290,17 @@
     }
 
     function updateUI() {
-        document.getElementById('option-a').textContent = currentA;
-        document.getElementById('option-b').textContent = currentB;
-        document.getElementById('img-a').src = songImages[currentA];
-        document.getElementById('img-b').src = songImages[currentB];
+        // 確保歌名正確寫入並顯示
+        const labelA = document.getElementById('option-a');
+        const labelB = document.getElementById('option-b');
+        const imgA = document.getElementById('img-a');
+        const imgB = document.getElementById('img-b');
+
+        labelA.textContent = currentA;
+        labelB.textContent = currentB;
+        imgA.src = songImages[currentA];
+        imgB.src = songImages[currentB];
+
         document.getElementById('progress-fill').style.width = (currentRound / MAX_ROUNDS * 100) + '%';
         document.getElementById('round-info').textContent = `Round ${currentRound} / ${MAX_ROUNDS}`;
     }
@@ -272,7 +308,8 @@
     function showResults() {
         showView('result-view');
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        document.getElementById('top5-list').innerHTML = sorted.slice(0, 5).map((song, i) => `
+        const top5 = sorted.slice(0, 5);
+        document.getElementById('top5-list').innerHTML = top5.map((song, i) => `
             <div class="result-item">
                 <div class="rank-num">${i + 1}</div>
                 <img class="rank-img" src="${songImages[song]}">
@@ -310,12 +347,12 @@
                         url: shareUrl
                     });
                 } catch(err) {
-                    alert("無法分享，請儲存圖片後手動複製連結：\n" + shareUrl);
+                    alert("無法直接分享圖片，請儲存結果圖後手動分享連結：\n" + shareUrl);
                     downloadImage();
                 }
             }
         } else {
-            alert("瀏覽器不支援分享，請儲存圖片後手動複製連結：\n" + shareUrl);
+            alert("瀏覽器不支援分享，請儲存圖片後手動分享連結：\n" + shareUrl);
             downloadImage();
         }
     }
