@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Anson Lo Versus - 背景放大版</title>
+    <title>Anson Lo Versus - 背景清晰版</title>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            /* 教主應援粉紅色調 */
             --primary-color: #FFC0CB; 
             --accent-color: #FF99AC;
-            --bg-overlay: linear-gradient(135deg, rgba(255, 245, 247, 0.4) 0%, rgba(255, 192, 203, 0.3) 100%); 
+            /* 【修正重點】降低遮罩透明度（數值變小），讓背景圖提升 10% 的清晰度 */
+            --bg-overlay: linear-gradient(135deg, rgba(255, 245, 247, 0.3) 0%, rgba(255, 192, 203, 0.2) 100%); 
             --card-bg: rgba(255, 255, 255, 0.92);
             --text-main: #4B5563;
             --font-round: 'ZCOOL KuaiLe', cursive;
@@ -24,13 +24,10 @@
         body { 
             display: flex; justify-content: center; align-items: center; 
             padding: env(safe-area-inset-top) 15px env(safe-area-inset-bottom) 15px;
-            
-            /* 背景圖設定 */
             background: var(--bg-overlay), 
                         url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
-            /* 【修正重點】將背景圖闊度放大 10% (即 110%)，並設為重複以徹底填滿頁面 */
-            background-size: 110% auto; /* 闊度放大 10%，高度比例縮放 */
-            background-repeat: repeat; /* 像壁紙一樣鋪滿全螢幕，解決留白問題 */
+            background-size: 110% auto; 
+            background-repeat: repeat; 
             background-position: center;
             background-attachment: fixed;
         }
@@ -133,7 +130,7 @@
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
         <p style="color: var(--accent-color); font-size: 0.9rem; font-family: var(--font-round);">選擇你的心水神曲</p>
-        <div class="version-tag">v1.3.9-fullbg-plus</div>
+        <div class="version-tag">v1.4.0-clear-bg</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -201,7 +198,7 @@
     };
 
     const presets = {
-        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", " Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life", "EGO"],
+        fast: ["一所懸命", "Megahit", "Megahit Megamix", "Mr. Stranger", "King Kong", "MONEY", "Nah", "ON", "Hey Hey OK!", "Heartbreaker", "Lemonade", "Gimme Gimme", "Charisma", "Trippin' Up", "Take That", "Rude Boy", "My Life", "EGO"],
         slow: ["Burn Out", "角落生物", "神隊友", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
     };
 
