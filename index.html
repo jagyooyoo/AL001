@@ -8,10 +8,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
+            /* 教主應援粉紅色調 */
             --primary-color: #FFC0CB; 
             --accent-color: #FF99AC;
-            --bg-overlay: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 245, 247, 0.75) 100%); 
-            --card-bg: rgba(255, 255, 255, 0.94);
+            
+            /* 【修正 1】還原上一個版本的背景效果（降低遮罩透明度至 0.4 和 0.3） */
+            --bg-overlay: linear-gradient(135deg, rgba(255, 245, 247, 0.4) 0%, rgba(255, 192, 203, 0.3) 100%); 
+            
+            --card-bg: rgba(255, 255, 255, 0.95);
             --text-main: #4B5563;
             --font-round: 'ZCOOL KuaiLe', cursive;
             --font-main: 'Noto Sans TC', sans-serif;
@@ -22,95 +26,86 @@
         
         body { 
             display: flex; justify-content: center; align-items: center; 
-            padding: env(safe-area-inset-top) 15px env(safe-area-inset-bottom) 15px;
+            padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
+            
+            /* 【修正 1】還原上一個版本的背景圖放大與重複設定 */
             background: var(--bg-overlay), 
                         url('https://raw.githubusercontent.com/jagyooyoo/AL001/refs/heads/main/1777784659143.png');
-            background-size: cover; 
+            background-size: 110% auto; /* 闊度放大 10% */
+            background-repeat: repeat; 
             background-position: center;
             background-attachment: fixed;
         }
         
         .container { 
-            background: var(--card-bg); 
-            width: 90%; 
-            max-width: 380px; 
-            height: auto; 
-            max-height: 90vh; 
-            padding: 25px 18px; 
-            border-radius: 35px; 
-            box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            position: relative;
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: var(--card-bg); width: 100%; max-width: 400px; 
+            height: 92vh; max-height: 800px;
+            padding: 20px 15px; border-radius: 35px; 
+            box-shadow: 0 10px 30px rgba(255,192,203,0.3); 
+            text-align: center; display: flex; flex-direction: column; position: relative;
+            
+            /* 【修正 1】還原 Backdrop Blur 數值為 10px */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
-        h1 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 15px; font-family: var(--font-round); }
-
-        .back-btn {
-            position: absolute; top: 22px; left: 20px; 
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--accent-color); border: none; 
-            width: 36px; height: 36px;
-            border-radius: 12px; cursor: pointer; 
-            display: flex; align-items: center;
-            justify-content: center; font-size: 1.2rem; z-index: 100;
-            box-shadow: 0 4px 10px rgba(255, 192, 203, 0.3);
-        }
+        h1 { font-size: 1.5rem; color: var(--accent-color); margin-bottom: 10px; font-family: var(--font-round); text-shadow: 1px 1px 0px #fff; }
 
         .view { display: none; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .view.active { display: flex; flex-direction: column; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .view.active { display: flex; flex-direction: column; animation: fadeIn 0.3s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        #menu-view { justify-content: center; gap: 20px; padding: 20px 0; }
-        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0; }
+        #menu-view { justify-content: center; }
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; }
         
         .category-btn { 
-            padding: 20px 10px;
-            background: #fff;
-            border: 2px solid var(--primary-color); 
-            border-radius: 24px; 
-            cursor: pointer; 
-            color: var(--accent-color); 
-            font-weight: bold; 
-            font-size: 1.1rem; 
-            font-family: var(--font-round);
-            transition: transform 0.1s;
+            padding: 20px 10px; background: #fff9fa; border: 2px solid var(--primary-color); 
+            border-radius: 20px; cursor: pointer; color: var(--accent-color); 
+            font-weight: bold; font-size: 1.1rem; font-family: var(--font-round);
+            box-shadow: 0 4px 6px rgba(255,192,203,0.2);
         }
         .category-btn:active { transform: scale(0.95); }
-        
-        .version-tag { position: absolute; bottom: 12px; right: 20px; font-size: 9px; color: #ccc; }
+        .version-tag { position: absolute; bottom: 5px; right: 10px; font-size: 8px; color: #ccc; pointer-events: none; }
 
-        /* 對決卡片修正 */
-        .choice-card { 
-            background: #fff; border: 2px solid #fff; border-radius: 22px; 
-            cursor: pointer; margin-bottom: 12px; overflow: hidden;
-            display: flex; flex-direction: column;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            transition: transform 0.1s;
-            position: relative;
-            z-index: 10;
-            height: 40%; /* 確保兩張卡片均分空間 */
+        .back-btn {
+            position: absolute; top: 18px; left: 15px; background: #fff1f3;
+            color: var(--accent-color); border: none; width: 32px; height: 32px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; font-size: 1.2rem; z-index: 10;
         }
-        .choice-card:active { transform: scale(0.98); background: #fffafb; }
+
+        .choice-card { 
+            background: #fdf2f4; border: 3px solid #fff; border-radius: 20px; 
+            cursor: pointer; transition: transform 0.1s; margin-bottom: 10px; overflow: hidden;
+            display: flex; flex-direction: column; flex: 1; min-height: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .choice-card:active { transform: scale(0.98); opacity: 0.8; }
         
-        .song-img { width: 100%; height: 75%; object-fit: cover; pointer-events: none; }
-        .song-label { height: 25%; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; justify-content: center; color: #555; background: #fff; pointer-events: none; }
+        .song-img { width: 100%; flex: 1; object-fit: cover; background: #ffeef2; min-height: 0; }
+        
+        /* 【修正 2】確保歌名樣式正確並顯示 */
+        .song-label { font-size: 0.95rem; font-weight: 700; padding: 10px 5px; color: var(--text-main); background: #fff; display: block !important; visibility: visible !important; }
 
-        .progress-bar { width: 100%; height: 6px; background: #f0f0f0; border-radius: 10px; margin-bottom: 15px; }
-        #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: width 0.3s; }
-        #round-info { font-size: 0.85rem; color: var(--accent-color); margin-bottom: 5px; font-family: var(--font-round); }
+        .progress-container { margin-bottom: 8px; }
+        .progress-bar { width: 100%; height: 6px; background: #fff1f3; border-radius: 10px; }
+        #progress-fill { width: 0%; height: 100%; background: var(--accent-color); border-radius: 10px; transition: 0.3s; }
+        #round-info { font-size: 0.8rem; margin-bottom: 5px; color: var(--accent-color); font-family: var(--font-round); }
 
-        #capture-area { padding: 15px 10px; border-radius: 25px; border: 2px solid var(--primary-color); margin-bottom: 15px; background: white; }
-        .share-header { color: var(--accent-color); font-size: 1.3rem; margin-bottom: 10px; font-family: var(--font-round); }
-        .result-item { display: flex; align-items: center; padding: 6px 12px; background: #fffcfd; margin-bottom: 6px; border-radius: 14px; border: 1px solid #fff0f3; }
-        .rank-img { width: 40px; height: 40px; border-radius: 8px; margin-right: 12px; object-fit: cover; }
-        .rank-num { font-size: 1.2rem; font-weight: 900; color: var(--accent-color); width: 20px; }
+        #capture-area { padding: 12px; border-radius: 20px; border: 3px solid var(--primary-color); margin-bottom: 10px; background: white; }
+        .share-header { color: var(--accent-color); font-size: 1.2rem; margin-bottom: 12px; font-family: var(--font-round); }
+        .result-item { display: flex; align-items: center; padding: 6px 12px; background: #fff9fa; margin-bottom: 5px; border-radius: 12px; }
+        .rank-img { width: 40px; height: 40px; border-radius: 8px; margin-right: 12px; object-fit: cover; background: #eee; }
+        .rank-num { font-size: 1.1rem; font-weight: 900; color: var(--accent-color); width: 20px; font-family: var(--font-round); }
 
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: auto; }
+        /* 結果頁按鈕三欄佈局 */
+        .btn-group { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: 8px; 
+            margin-top: auto;
+        }
         .btn { 
             padding: 10px 5px; border-radius: 15px; font-size: 0.8rem; border: none; color: white; cursor: pointer; font-weight: bold; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
@@ -132,8 +127,8 @@
             <div class="category-btn" onclick="initGame('fast')">⚡ 跳唱歌</div>
             <div class="category-btn" onclick="initGame('slow')">🌙 深情歌</div>
         </div>
-        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round);">神徒們，準備好選出心水了嗎？</p>
-        <div class="version-tag">v1.6.1-fix</div>
+        <p style="color: var(--accent-color); font-size: 0.95rem; font-family: var(--font-round); opacity: 0.9;">神徒們，準備好選出心水了嗎？</p>
+        <div class="version-tag">v1.6.2-fix-bg-label</div>
     </div>
 
     <div id="compare-view" class="view">
@@ -143,11 +138,11 @@
         </div>
         <div class="choice-card" onclick="handleChoice(0)">
             <img id="img-a" class="song-img" src="">
-            <div id="option-a" class="song-label">載入中...</div>
+            <div id="option-a" class="song-label"></div>
         </div>
         <div class="choice-card" onclick="handleChoice(1)">
             <img id="img-b" class="song-img" src="">
-            <div id="option-b" class="song-label">載入中...</div>
+            <div id="option-b" class="song-label"></div>
         </div>
     </div>
 
@@ -205,14 +200,14 @@
         slow: ["Burn Out", "角落生物", "神隊友", "不可愛教主", "永順街39號", "同居陌生人", "偷情", "浪漫殺死巨蟹座", "特別約會儀式", "致我", "你都有今日", "本命", "我的支持型伴侶", "深閨"]
     };
 
-    let items = [], scores = {}, currentRound = 0;
+    let items = [], scores = {}, currentRound = 0, matchHistory = new Set();
     const MAX_ROUNDS = 25; 
     let currentA = "", currentB = "";
 
     function initGame(type) {
         items = [...presets[type]].sort(() => Math.random() - 0.5);
         scores = {}; items.forEach(item => scores[item] = 1000); 
-        currentRound = 0;
+        matchHistory.clear(); currentRound = 0;
         document.getElementById('global-back').style.display = 'flex';
         showView('compare-view');
         nextMatch();
@@ -228,23 +223,44 @@
             document.getElementById('global-back').style.display = 'none';
             showResults(); return; 
         }
+
         const sorted = [...items].sort((a, b) => scores[b] - scores[a]);
-        let pivot = Math.floor(Math.random() * (items.length - 1));
-        currentA = sorted[pivot]; currentB = sorted[pivot + 1];
+        let found = false;
+        let attempts = 0;
+
+        while (!found && attempts < 100) {
+            attempts++;
+            let tA, tB;
+            if (currentRound <= 10) {
+                let idxA = Math.floor(Math.random() * items.length);
+                let idxB = (idxA + Math.floor(Math.random() * 5) + 2) % items.length;
+                tA = items[idxA]; tB = items[idxB];
+            } else {
+                let pivot = Math.random() > 0.3 ? Math.floor(Math.random() * 7) : Math.floor(Math.random() * (items.length - 1));
+                tA = sorted[pivot]; tB = sorted[pivot + 1];
+            }
+            const key = [tA, tB].sort().join('|');
+            if (tA !== tB && !matchHistory.has(key)) {
+                currentA = tA; currentB = tB;
+                matchHistory.add(key); found = true;
+            }
+        }
+        if (!found) { currentA = items[0]; currentB = items[1]; }
         updateUI();
     }
 
     function handleChoice(idx) {
-        // 點擊後計算得分並進入下一輪
         const winner = idx === 0 ? currentA : currentB;
         const loser = idx === 0 ? currentB : currentA;
-        scores[winner] += 60;
-        scores[loser] -= 40;
+        const winProb = 1 / (1 + Math.pow(10, (scores[loser] - scores[winner]) / 400));
+        const K = 55; 
+        const scoreChange = Math.round(K * (1 - winProb));
+        scores[winner] += scoreChange;
+        scores[loser] -= Math.floor(scoreChange * 0.8);
         nextMatch();
     }
 
     function updateUI() {
-        // 確保圖片與文字正確渲染
         const imgA = document.getElementById('img-a');
         const imgB = document.getElementById('img-b');
         const labelA = document.getElementById('option-a');
@@ -252,6 +268,8 @@
 
         imgA.src = songImages[currentA];
         imgB.src = songImages[currentB];
+        
+        // 【修正 2】確保 JS 正確將歌名寫入 DOM
         labelA.textContent = currentA;
         labelB.textContent = currentB;
 
@@ -267,7 +285,7 @@
             <div class="result-item">
                 <div class="rank-num">${i + 1}</div>
                 <img class="rank-img" src="${songImages[song]}">
-                <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.9rem;">${song}</div>
+                <div style="font-weight:700; flex:1; text-align:left; color:#555; font-size:0.95rem;">${song}</div>
             </div>
         `).join('');
     }
@@ -283,7 +301,7 @@
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
         const file = new File([blob], 'AL_Top5.png', { type: 'image/png' });
         
-        const shareUrl = window.location.href;
+        const shareUrl = window.location.href; // 自動獲取當前網址
         const shareData = {
             title: 'Anson Lo Versus',
             text: `這是我選出的 Anson Lo 心水 Top 5！你也來挑戰看看吧！\n傳送門：`,
@@ -298,7 +316,8 @@
                 throw new Error('Not supported');
             }
         } catch (err) {
-            alert("不支援直接分享圖片，請儲存結果圖後手動分享連結：\n" + shareUrl);
+            // 如果不支援檔案分享，改為複製網址並提示下載
+            alert("此瀏覽器不支援直接分享圖片，請儲存結果圖後手動貼上連結：\n" + shareUrl);
             downloadImage();
         }
     }
@@ -306,7 +325,7 @@
     function downloadImage() {
         const btn = document.getElementById('dl-btn');
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="btn-icon">⏳</span>...';
+        btn.innerHTML = '<span class="btn-icon">⏳</span>處理中';
         html2canvas(document.getElementById('capture-area'), { backgroundColor: "#ffffff", useCORS: true, scale: 2 }).then(canvas => {
             const link = document.createElement('a');
             link.download = `AnsonLo_Top5.png`;
